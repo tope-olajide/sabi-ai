@@ -1,0 +1,16 @@
+.editor-section {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  width: 80%;
+  min-height: 400px;
+  margin: 50px auto;
+  border-radius: 10px;
+  padding: 50px;
+  outline: none;
+  color: blue;
+  border: 0;
+}
+
+.highlight {
+  border-bottom: 2px solid red;
+  cursor: pointer;
+}
