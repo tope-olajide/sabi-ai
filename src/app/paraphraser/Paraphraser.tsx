@@ -5,7 +5,7 @@ import Button from "@mui/material/Button";
 const Paraphraser = () => {
   return (
     <>
-      <SideBar>
+      <SideBar pageTitle={"Paraphraser"}>
         <section className="input-output-container">
           <div className="modes-section">
             <h4>Modes:</h4> <p className="active">Normal</p> <p>Fluency</p>{" "}
