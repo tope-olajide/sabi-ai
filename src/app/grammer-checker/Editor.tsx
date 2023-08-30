@@ -1,5 +1,5 @@
 "use client";
-import './editor.css'
+import "./editor.css";
 import {
   Popover,
   Box,
@@ -33,11 +33,29 @@ const Editor = () => {
     return doc.body.innerHTML;
   }
 
+
   const [exceptionList, setExceptionList] = useState([""]);
-  const checkWords = () => {
-    const outputString = `Sability <span class='highlight' data-corrected='helps' data-error-type='verb agreement'>help</span> you to improve your content on millions of websites! Write or paste your <span class='highlight' data-corrected='sentence' data-error-type='spelling'>sentense</span> to get it checked for <span class='highlight' data-corrected='grammar' data-error-type='spelling'>gramar</span> and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and <span class='highlight' data-corrected='accept' data-error-type='spelling'>acept</span> it!`;
-    const newHTMLData = excemptWord(outputString, exceptionList);
-    editorRef.current!.innerHTML = newHTMLData;
+  const checkWords = async () => {
+    const textData = editorRef.current!.innerText
+    if (!textData.trim()) {
+      return 
+    }
+    try {
+      const response = await fetch("http://localhost:5000/grammar-check", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({textData:editorRef.current!.innerText}),
+      });
+     const result = await response.json();
+      console.log(result.queryResult.response)
+       const newHTMLData = result.queryResult.response;
+      editorRef.current!.innerHTML = '';
+      editorRef.current!.innerHTML = newHTMLData; 
+    } catch (error) {
+      console.log(error);
+    }
   };
   const setExcemption = () => {
     const exceptionListCopy = [...exceptionList, selectedWord!.word];
@@ -61,24 +79,27 @@ const Editor = () => {
   const correctWord = () => {
     const textNode = document.createTextNode(selectedWord!.corrected);
     anchorEl?.parentNode?.replaceChild(textNode, anchorEl);
+    console.log(editorRef.current!.innerText)
     handleClose();
   };
 
   let timer: NodeJS.Timeout;
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
     clearTimeout(timer);
-    const newTimer: NodeJS.Timeout = setTimeout(() => {
+    const newTimer: NodeJS.Timeout = setTimeout(async () => {
       const newText = event.target.textContent;
       console.log("sending data...");
-      console.log(newText);
-    }, 2000);
+      await checkWords()
+      
+      console.log(editorRef.current!.innerText);
+    }, 4000);
     timer = newTimer;
   };
   useEffect(() => {
     checkWords();
   }, [exceptionList]);
   useEffect(() => {
-    const handleClickOnHighlight = (event) => {
+    const handleClickOnHighlight = (event:any) => {
       if (event.target.classList.contains("highlight")) {
         const clickedText = event.target.textContent;
         const corrected = event.target.dataset.corrected;
@@ -98,7 +119,7 @@ const Editor = () => {
         id="text"
         contentEditable
         className="editor-section"
-        onInput={(e) => handleEditorChange(e)}
+        onInput={(e:any) => handleEditorChange(e)}
         ref={editorRef}
       />
       <button onClick={checkWords}>Highlight Incorrect Grammar</button>
@@ -148,7 +169,6 @@ const Editor = () => {
           </Button>
         </Box>
       </Popover>
-
     </div>
   );
 };
