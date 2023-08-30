@@ -1,14 +1,11 @@
-
-
-import Editor from "@/app/grammer-checker/Editor";
+import Editor from "@/app/grammar-checker/Editor";
 import SideBar from "@/components/SideBar";
 const GrammerChecker = () => {
-
   return (
     <>
       <SideBar>
         <Editor />
-</SideBar>
+      </SideBar>
     </>
   );
 };

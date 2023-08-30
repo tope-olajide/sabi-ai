@@ -1,5 +1,5 @@
 import SideBar from "@/components/SideBar";
-import GrammerChecker from "./grammer-checker/GrammarChecker";
+import GrammerChecker from "./grammar-checker/GrammarChecker";
 
 export default function Home() {
   return (
