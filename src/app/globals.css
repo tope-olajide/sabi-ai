@@ -1,14 +1,72 @@
-
-
-
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
 }
-
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+}
+
+
+.input-output-container {
+  width: 90%;
+  height: 440px;
+  margin: 20px auto;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
+    rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
+    rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
+}
+.modes-section {
+  width: 100%;
+  height: 60px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  padding: 20px;
+}
+
+.modes-section p {
+  margin: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.modes-section p:hover {
+  border-bottom: 2px solid green;
+}
+.active {
+  border-bottom: 2px solid green;
+}
+.input-container,
+.output-container {
+  width: 100%;
+  height: 380px;
+  padding: 20px;
+}
+
+.input-output-section {
+  display: flex;
+}
+
+.input-container {
+  border-right: 1px solid rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.editable {
+  height: 90%;
+  overflow: auto;
+  outline: none;
+}
+.sub_div {
+  min-height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.output-container {
+  border-left: 1px solid rgba(0, 0, 0, 0.5);
 }
