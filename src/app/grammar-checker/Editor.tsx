@@ -46,7 +46,7 @@ const Editor = () => {
     }
     try {
       setIsCheckingGrammar(true)
-      const response = await fetch("http://localhost:5000/grammar-check", {
+      const response = await fetch("https://sability-ai.onrender.com/grammar-check", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
