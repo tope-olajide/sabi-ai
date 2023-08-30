@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-nocheck
 
 "use client";
 
@@ -98,7 +96,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideBar({ children, pageTitle }) {
+export default function SideBar({ children, pageTitle }:any) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
