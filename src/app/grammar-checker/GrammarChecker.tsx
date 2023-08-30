@@ -3,7 +3,7 @@ import SideBar from "@/components/SideBar";
 const GrammerChecker = () => {
   return (
     <>
-      <SideBar>
+      <SideBar pageTitle={'Grammar Checker'}>
         <Editor />
       </SideBar>
     </>

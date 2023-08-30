@@ -12,21 +12,18 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
 import CloseIcon from "@mui/icons-material/Close";
 import SpellcheckIcon from "@mui/icons-material/Spellcheck";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import Translate from "@mui/icons-material/Translate";
 import ShortTextIcon from "@mui/icons-material/ShortText";
-import AccountIcon from "@mui/icons-material/AccountCircle"; 
+import AccountIcon from "@mui/icons-material/AccountCircle";
+import Link from "@mui/material/Link";
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -98,7 +95,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideBar({children}) {
+export default function SideBar({ children, pageTitle }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -128,16 +125,26 @@ export default function SideBar({children}) {
           >
             {open ? <CloseIcon /> : <MenuIcon />}
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Sability AI
-          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+            }}
+          >
+            <Typography variant="h6" noWrap component="p">
+              Sability AI
+            </Typography>
+            <Typography noWrap component="p" sx={{ fontWeight: 600 }}>
+              {pageTitle}
+            </Typography>
+
+            <div></div>
+          </Box>
         </Toolbar>
       </AppBar>
-      <Drawer
-        variant="permanent"
-        open={open}
-
-      >
+      <Drawer variant="permanent" open={open}>
         <DrawerHeader></DrawerHeader>
         <Divider />
         <List>
@@ -149,40 +156,47 @@ export default function SideBar({children}) {
             "Content Generator",
           ].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
-                }}
+              <Link
+                underline="none"
+                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize" : "#"}
               >
-                <ListItemIcon
+                {" "}
+                <ListItemButton
                   sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
                   }}
                 >
-                  {index == 0 ? (
-                    <SpellcheckIcon />
-                  ) : index == 1 ? (
-                    <HistoryEduIcon />
-                  ) : index == 2 ? (
-                    <ShortTextIcon />
-                  ) : index == 3 ? (
-                    <Translate />
-                  ) : (
-                    <EditNoteIcon />
-                  )}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {index == 0 ? (
+                      <SpellcheckIcon />
+                    ) : index == 1 ? (
+                      <HistoryEduIcon />
+                    ) : index == 2 ? (
+                      <ShortTextIcon />
+                    ) : index == 3 ? (
+                      <Translate />
+                    ) : (
+                      <EditNoteIcon />
+                    )}
+                  </ListItemIcon>
+                  <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                </ListItemButton>
+              </Link>
             </ListItem>
           ))}
         </List>
         <Divider />
-        <List sx={{mt:25}}><Divider />
-          {["Account",].map((text, index) => (
+        <List sx={{ mt: 25 }}>
+          <Divider />
+          {["Account"].map((text, index) => (
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <ListItemButton
                 sx={{
@@ -198,7 +212,7 @@ export default function SideBar({children}) {
                     justifyContent: "center",
                   }}
                 >
-                  {index % 2 === 0 ? <AccountIcon /> : <MailIcon />}
+                  {<AccountIcon />}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -207,7 +221,6 @@ export default function SideBar({children}) {
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-       
         <Toolbar />
         {children}
       </Box>

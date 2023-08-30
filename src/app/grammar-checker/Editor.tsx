@@ -7,6 +7,8 @@ import {
   Badge,
   IconButton,
   Button,
+  Grid,
+  CircularProgress,
 } from "@mui/material";
 import React, {
   ChangeEvent,
@@ -35,12 +37,15 @@ const Editor = () => {
 
 
   const [exceptionList, setExceptionList] = useState([""]);
+  const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
+  const [isCheckingError, setIsCheckingError] = useState(false);
   const checkWords = async () => {
     const textData = editorRef.current!.innerText
     if (!textData.trim()) {
       return 
     }
     try {
+      setIsCheckingGrammar(true)
       const response = await fetch("http://localhost:5000/grammar-check", {
         method: "POST",
         headers: {
@@ -50,6 +55,7 @@ const Editor = () => {
       });
      const result = await response.json();
       console.log(result.queryResult.response)
+      setIsCheckingGrammar(false)
        const newHTMLData = result.queryResult.response;
       editorRef.current!.innerHTML = '';
       editorRef.current!.innerHTML = newHTMLData; 
@@ -87,14 +93,18 @@ const Editor = () => {
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
     clearTimeout(timer);
     const newTimer: NodeJS.Timeout = setTimeout(async () => {
-      const newText = event.target.textContent;
-      console.log("sending data...");
+  
       await checkWords()
       
       console.log(editorRef.current!.innerText);
-    }, 4000);
+    }, 1000);
     timer = newTimer;
   };
+  
+  useEffect(() => {
+    editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
+  }, []);
+ 
   useEffect(() => {
     checkWords();
   }, [exceptionList]);
@@ -114,15 +124,21 @@ const Editor = () => {
     };
   }, []);
   return (
-    <div>
+    <>
+    <Box
+      className="editor-section"
+    >
       <div
-        id="text"
         contentEditable
-        className="editor-section"
+        className="editor"
         onInput={(e:any) => handleEditorChange(e)}
         ref={editorRef}
-      />
-      <button onClick={checkWords}>Highlight Incorrect Grammar</button>
+        />
+        <div className="editor-options">
+        {isCheckingGrammar?<CircularProgress size={30} />:null} {/* <div className="checking-progress"> <CircularProgress size={20} /><p> Checking Grammar</p></div> */}
+        </div>
+      </Box>
+
       <Popover
         id={id}
         open={open}
@@ -169,7 +185,8 @@ const Editor = () => {
           </Button>
         </Box>
       </Popover>
-    </div>
+      
+    </>
   );
 };
 
