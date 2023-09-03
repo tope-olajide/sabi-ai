@@ -31,7 +31,7 @@ const Summarize = () => {
     }
     try {
       setIsSummarizing(true);
-      const response = await fetch("http://localhost:5000/summarize-text", {
+      const response = await fetch("https://sability-ai.onrender.com/summarize-text", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
