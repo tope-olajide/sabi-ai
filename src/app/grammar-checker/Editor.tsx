@@ -18,8 +18,16 @@ import React, {
   useState,
 } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import PublishIcon from "@mui/icons-material/Publish";
+import Divider from "@mui/material/Divider";
+
 const Editor = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   function excemptWord(htmlString: string, exceptionList: string | string[]) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(htmlString, "text/html");
@@ -35,31 +43,36 @@ const Editor = () => {
     return doc.body.innerHTML;
   }
 
-
   const [exceptionList, setExceptionList] = useState([""]);
   const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
-  const [isCheckingError, setIsCheckingError] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const checkWords = async () => {
-    const textData = editorRef.current!.innerText
+    setIsEditing(false)
+    const textData = editorRef.current!.innerText;
     if (!textData.trim()) {
-      return 
+      return;
     }
     try {
-      setIsCheckingGrammar(true)
-      const response = await fetch("https://sability-ai.onrender.com/grammar-check", {
+      setIsCheckingGrammar(true);
+      const response = await fetch("http://localhost:5000/grammar-chec", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({textData:editorRef.current!.innerText}),
+        body: JSON.stringify({ textData: editorRef.current!.innerText }),
       });
-     const result = await response.json();
-      console.log(result.queryResult.response)
-      setIsCheckingGrammar(false)
-       const newHTMLData = result.queryResult.response;
-      editorRef.current!.innerHTML = '';
-      editorRef.current!.innerHTML = newHTMLData; 
+      const result = await response.json();
+      console.log(result.queryResult.response);
+      setIsCheckingGrammar(false);
+      const newHTMLData = result.queryResult.response;
+// if the isEditing is still false, overwrite the text in the editor
+      if (isEditing === false) {
+      editorRef.current!.innerHTML = "";
+      editorRef.current!.innerHTML = newHTMLData;
+      }
+      
     } catch (error) {
+      setIsCheckingGrammar(false)
       console.log(error);
     }
   };
@@ -85,31 +98,63 @@ const Editor = () => {
   const correctWord = () => {
     const textNode = document.createTextNode(selectedWord!.corrected);
     anchorEl?.parentNode?.replaceChild(textNode, anchorEl);
-    console.log(editorRef.current!.innerText)
+    console.log(editorRef.current!.innerText);
     handleClose();
   };
-
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
   let timer: NodeJS.Timeout;
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
+    if (editorRef.current?.innerHTML) {
+      setIsEditorEmpty(false)
+    }
+    else {
+      setIsEditorEmpty(true)
+    }
+    if (!isEditing) {
+      setIsEditing(true)
+    }
+    
     clearTimeout(timer);
     const newTimer: NodeJS.Timeout = setTimeout(async () => {
-  
-      await checkWords()
-      
+      await checkWords();
+
       console.log(editorRef.current!.innerText);
     }, 1000);
     timer = newTimer;
   };
-  
+
+ const handlePaste = (e) => {
+  e.preventDefault(); 
+  const text = e.clipboardData.getData('text/plain');
+  const selection = window.getSelection();
+  const range = selection!.getRangeAt(0);
+  range.deleteContents();
+  const textNode = document.createTextNode(text);
+  range.insertNode(textNode);
+  range.setStartAfter(textNode);
+  range.collapse(true);
+  selection!.removeAllRanges();
+  selection!.addRange(range);
+  }
+
+  const focusEditor = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  }
+
   useEffect(() => {
-    editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
+    focusEditor()
   }, []);
- 
+  /*   useEffect(() => {
+    editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
+  }, []); */
+
   useEffect(() => {
     checkWords();
   }, [exceptionList]);
   useEffect(() => {
-    const handleClickOnHighlight = (event:any) => {
+    const handleClickOnHighlight = (event: any) => {
       if (event.target.classList.contains("highlight")) {
         const clickedText = event.target.textContent;
         const corrected = event.target.dataset.corrected;
@@ -123,19 +168,131 @@ const Editor = () => {
       document.removeEventListener("click", handleClickOnHighlight);
     };
   }, []);
+  const [wordCount, setWordCount] = useState(0);
+  const countWords = (text: string) => {
+    const words = text.split(' ');
+    const filteredWords = words.filter(word => word.trim() !== '');
+    return filteredWords.length;
+  }
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setIsCheckingGrammar(true);
+    const file = e.target.files?.[0];
+    if (file && file.type === 'application/pdf') {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/grammar-checker/api", {
+        method: "POST",
+        body: formData,
+      });
+       const result = await response.json();
+       setIsCheckingGrammar(false);
+      if (result.success === false) {
+        console.log(result.message);
+       
+       return alert(result.message);
+      }
+      setIsEditorEmpty(false)
+      editorRef.current!.innerHTML = "";
+      editorRef.current!.innerHTML = result.data;
+      
+      const totalWordCount = countWords(result.data)
+      setWordCount(totalWordCount)
+      //setSelectedFile(file);
+    } else {
+      alert('Please select a PDF file.');
+    }
+  };
+  const handlePasteClick = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (editorRef.current) {
+        const div = editorRef.current;
+        const selection = window.getSelection();
+        if (selection) {
+          const range = selection.getRangeAt(0);
+          const textNode = document.createTextNode(text);
+          range.deleteContents();
+          range.insertNode(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          div.focus();
+          setIsEditorEmpty(false)
+        }
+      }
+    } catch (error) {
+      console.error("Unable to read clipboard data: ", error);
+    }
+  };
   return (
     <>
-    <Box
-      className="editor-section"
-    >
-      <div
-        contentEditable
-        className="editor"
-        onInput={(e:any) => handleEditorChange(e)}
-        ref={editorRef}
-        />
+      <Box className="editor-section">
+        <section>
+          <div
+            contentEditable
+            className="editor"
+            onInput={(e: any) => handleEditorChange(e)}
+            ref={editorRef}
+            onPaste={handlePaste}
+          />
+          {isEditorEmpty?<div className="placeholder-container">
+            <h1 className="placeholder-text" onClick={focusEditor}>
+              Start by writing, pasting (Ctrl + V) text, or uploading a
+              document(pdf)
+            </h1>
+            <Box sx={{ mt: 3 }}>
+              <Button
+                sx={{
+                  mr: 3,
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  borderRadius: 5,
+                }}
+                variant="outlined"
+                startIcon={<ContentPasteIcon />}
+                onClick={handlePasteClick}
+              >
+                Paste Text
+              </Button>
+              <input
+        type="file"
+        accept=".pdf"
+        onChange={handleFileChange}
+        style={{ display: 'none' }}
+        ref={fileInputRef}
+      />
+              <Button
+                sx={{
+                  fontWeight: "bold",
+                  textTransform: "none",
+                  borderRadius: 5,
+                }}
+                variant="outlined"
+                startIcon={<PublishIcon />}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                Upload Document
+              </Button>
+            </Box>
+          </div>:null}
+        </section>
+
         <div className="editor-options">
-        {isCheckingGrammar?<CircularProgress size={30} />:null} {/* <div className="checking-progress"> <CircularProgress size={20} /><p> Checking Grammar</p></div> */}
+         <Button
+            variant="contained"
+            sx={{ textTransform: "none", borderRadius: 5 }}
+          >
+            Check Error
+          </Button>
+          <Divider orientation="vertical" flexItem /> {isCheckingGrammar ? (
+            <CircularProgress size={30} />
+          ) : (
+            <div className="error-count-container">
+              <span></span> <p className="error-count">20</p>{" "}
+            </div>
+          )}
+          <Divider orientation="vertical" flexItem />
+          <div>{wordCount} Words</div> <Divider orientation="vertical" flexItem />
+          <FileDownloadIcon /> <ContentCopyIcon />{" "}
         </div>
       </Box>
 
@@ -185,7 +342,6 @@ const Editor = () => {
           </Button>
         </Box>
       </Popover>
-      
     </>
   );
 };
