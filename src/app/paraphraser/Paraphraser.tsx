@@ -1,31 +1,244 @@
 "use client";
 import SideBar from "@/components/SideBar";
 import Button from "@mui/material/Button";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
+import { ChangeEvent, useRef, useState } from "react";
+import { Box } from "@mui/material";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import PublishIcon from "@mui/icons-material/Publish";
 
 const Paraphraser = () => {
+  const [value, setValue] = useState("Normal");
+  const [inputWordCount, setInputWordCount] = useState(0);
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setValue((event.target as HTMLInputElement).value);
+  };
+  const editorRef = useRef<HTMLDivElement | null>(null);
+  const outputRef = useRef<HTMLDivElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const handlePasteClick = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (editorRef.current) {
+        const div = editorRef.current;
+        const selection = window.getSelection();
+        if (selection) {
+          const range = selection.getRangeAt(0);
+          const textNode = document.createTextNode(text);
+          range.deleteContents();
+          range.insertNode(textNode);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          div.focus();
+          setIsEditorEmpty(false);
+          setInputWordCount(countWords(editorRef.current!.innerText));
+        }
+      }
+    } catch (error) {
+      console.error("Unable to read clipboard data: ", error);
+    }
+  };
+
+  const countWords = (text: string) => {
+    const words = text.split(" ");
+    const filteredWords = words.filter((word) => word.trim() !== "");
+    return filteredWords.length;
+  };
+
+  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && file.type === "application/pdf") {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await fetch("/grammar-checker/api", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await response.json();
+      if (result.success === false) {
+        console.log(result.message);
+
+        return alert(result.message);
+      }
+
+      editorRef.current!.innerHTML = "";
+      editorRef.current!.innerHTML = result.data;
+      setIsEditorEmpty(false);
+      setInputWordCount(countWords(editorRef.current!.innerText));
+    } else {
+      alert("Please select a PDF file.");
+    }
+  };
+
+  const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
+    if (editorRef.current?.innerHTML) {
+      setIsEditorEmpty(false);
+    } else {
+      setIsEditorEmpty(true);
+    }
+    setInputWordCount(countWords(editorRef.current!.innerText));
+    };
+    const [isParaphrasing, setIsParaphrasing] = useState(false); 
+    const paraphraseText = async () => {
+        const textData = editorRef.current!.innerText;
+        if (!textData.trim()) {
+          return;
+        }
+        try {
+            setIsParaphrasing(true);
+          const response = await fetch("http://localhost:5000/paraphrase-text", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ textData: editorRef.current!.innerText, mode:value }),
+          });
+          const result = await response.json();
+          console.log(result.queryResult.response);
+          setIsParaphrasing(false);
+          const paraphrasedText = result.queryResult.response;
+          outputRef.current!.innerHTML = "";
+          outputRef.current!.innerHTML = paraphrasedText;
+          
+        } catch (error) {
+            setIsParaphrasing(false);
+          console.log(error);
+        }
+  };
   return (
     <>
       <SideBar pageTitle={"Paraphraser"}>
         <section className="input-output-container">
           <div className="modes-section">
-            <h4>Modes:</h4> <p className="active">Normal</p> <p>Fluency</p>{" "}
-            <p>Professional</p> <p>Simple</p>
+            <FormControl
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <FormLabel sx={{ mr: 4 }}>Modes: </FormLabel>
+              <RadioGroup
+                aria-labelledby="demo-controlled-radio-buttons-group"
+                name="controlled-radio-buttons-group"
+                value={value}
+                onChange={handleChange}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  flexWrap: "nowrap",
+                  width: "100%",
+                }}
+              >
+                <FormControlLabel
+                  value="Normal"
+                  control={<Radio />}
+                  label="Normal"
+                />
+                <FormControlLabel
+                  value="Fluency"
+                  control={<Radio />}
+                  label="Fluency"
+                />
+                <FormControlLabel
+                  value="Professional"
+                  control={<Radio />}
+                  label="Professional"
+                />
+                <FormControlLabel
+                  value="Simple"
+                  control={<Radio />}
+                  label="Simple"
+                />
+                <FormControlLabel
+                  value="Academic"
+                  control={<Radio />}
+                  label="Academic"
+                />
+                <FormControlLabel
+                  value="Creative"
+                  control={<Radio />}
+                  label="Creative"
+                />
+                <FormControlLabel
+                  value="Expand"
+                  control={<Radio />}
+                  label="Expand"
+                />
+                <FormControlLabel
+                  value="Shorten"
+                  control={<Radio />}
+                  label="Shorten"
+                />
+              </RadioGroup>
+            </FormControl>
           </div>
           <section className="input-output-section">
             <section className="input-container">
-              <div contentEditable className="editable"></div>
+              <div
+                ref={editorRef}
+                contentEditable
+                className="editable"
+                onInput={(e: any) => handleEditorChange(e)}
+              />
+
               <div className="sub_div">
-                <p>Words:34</p>
+                {isEditorEmpty ? (
+                  <Box>
+                    <Button
+                      sx={{
+                        mr: 3,
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        borderRadius: 5,
+                      }}
+                      variant="outlined"
+                      startIcon={<ContentPasteIcon />}
+                      onClick={handlePasteClick}
+                    >
+                      Paste Text
+                    </Button>
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      style={{ display: "none" }}
+                      ref={fileInputRef}
+                    />
+                    <Button
+                      sx={{
+                        fontWeight: "bold",
+                        textTransform: "none",
+                        borderRadius: 5,
+                      }}
+                      variant="outlined"
+                      startIcon={<PublishIcon />}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      Upload Document
+                    </Button>
+                  </Box>
+                ) : (
+                  <p>Words:{inputWordCount}</p>
+                )}
+
                 <Button
                   sx={{ textTransform: "Capitalize" }}
-                  variant="contained"
+                                  variant="contained"
+                                  onClick={paraphraseText}
+                                  disabled={isParaphrasing}
                 >
                   Paraphrase
                 </Button>
               </div>
             </section>
             <section className="output-container">
-              <div className="output"></div>
+              <div className="output" ref={outputRef}></div>
             </section>
           </section>
         </section>

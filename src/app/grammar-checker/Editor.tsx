@@ -47,7 +47,7 @@ const Editor = () => {
   const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const checkWords = async () => {
-    setIsEditing(false)
+    setIsEditing(false);
     const textData = editorRef.current!.innerText;
     if (!textData.trim()) {
       return;
@@ -65,14 +65,13 @@ const Editor = () => {
       console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
       const newHTMLData = result.queryResult.response;
-// if the isEditing is still false, overwrite the text in the editor
+      // if the isEditing is still false, overwrite the text in the editor otherwise do nothing
       if (isEditing === false) {
-      editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = newHTMLData;
+        editorRef.current!.innerHTML = "";
+        editorRef.current!.innerHTML = newHTMLData;
       }
-      
     } catch (error) {
-      setIsCheckingGrammar(false)
+      setIsCheckingGrammar(false);
       console.log(error);
     }
   };
@@ -105,15 +104,14 @@ const Editor = () => {
   let timer: NodeJS.Timeout;
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
     if (editorRef.current?.innerHTML) {
-      setIsEditorEmpty(false)
-    }
-    else {
-      setIsEditorEmpty(true)
+      setIsEditorEmpty(false);
+    } else {
+      setIsEditorEmpty(true);
     }
     if (!isEditing) {
-      setIsEditing(true)
+      setIsEditing(true);
     }
-    
+
     clearTimeout(timer);
     const newTimer: NodeJS.Timeout = setTimeout(async () => {
       await checkWords();
@@ -123,28 +121,28 @@ const Editor = () => {
     timer = newTimer;
   };
 
- const handlePaste = (e) => {
-  e.preventDefault(); 
-  const text = e.clipboardData.getData('text/plain');
-  const selection = window.getSelection();
-  const range = selection!.getRangeAt(0);
-  range.deleteContents();
-  const textNode = document.createTextNode(text);
-  range.insertNode(textNode);
-  range.setStartAfter(textNode);
-  range.collapse(true);
-  selection!.removeAllRanges();
-  selection!.addRange(range);
-  }
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    const selection = window.getSelection();
+    const range = selection!.getRangeAt(0);
+    range.deleteContents();
+    const textNode = document.createTextNode(text);
+    range.insertNode(textNode);
+    range.setStartAfter(textNode);
+    range.collapse(true);
+    selection!.removeAllRanges();
+    selection!.addRange(range);
+  };
 
   const focusEditor = () => {
     if (editorRef.current) {
       editorRef.current.focus();
     }
-  }
+  };
 
   useEffect(() => {
-    focusEditor()
+    focusEditor();
   }, []);
   /*   useEffect(() => {
     editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
@@ -170,36 +168,36 @@ const Editor = () => {
   }, []);
   const [wordCount, setWordCount] = useState(0);
   const countWords = (text: string) => {
-    const words = text.split(' ');
-    const filteredWords = words.filter(word => word.trim() !== '');
+    const words = text.split(" ");
+    const filteredWords = words.filter((word) => word.trim() !== "");
     return filteredWords.length;
-  }
+  };
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setIsCheckingGrammar(true);
     const file = e.target.files?.[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && file.type === "application/pdf") {
       const formData = new FormData();
       formData.append("file", file);
       const response = await fetch("/grammar-checker/api", {
         method: "POST",
         body: formData,
       });
-       const result = await response.json();
-       setIsCheckingGrammar(false);
+      const result = await response.json();
+      setIsCheckingGrammar(false);
       if (result.success === false) {
         console.log(result.message);
-       
-       return alert(result.message);
+
+        return alert(result.message);
       }
-      setIsEditorEmpty(false)
+      setIsEditorEmpty(false);
       editorRef.current!.innerHTML = "";
       editorRef.current!.innerHTML = result.data;
-      
-      const totalWordCount = countWords(result.data)
-      setWordCount(totalWordCount)
+
+      const totalWordCount = countWords(result.data);
+      setWordCount(totalWordCount);
       //setSelectedFile(file);
     } else {
-      alert('Please select a PDF file.');
+      alert("Please select a PDF file.");
     }
   };
   const handlePasteClick = async () => {
@@ -216,7 +214,7 @@ const Editor = () => {
           selection.removeAllRanges();
           selection.addRange(range);
           div.focus();
-          setIsEditorEmpty(false)
+          setIsEditorEmpty(false);
         }
       }
     } catch (error) {
@@ -234,56 +232,59 @@ const Editor = () => {
             ref={editorRef}
             onPaste={handlePaste}
           />
-          {isEditorEmpty?<div className="placeholder-container">
-            <h1 className="placeholder-text" onClick={focusEditor}>
-              Start by writing, pasting (Ctrl + V) text, or uploading a
-              document(pdf)
-            </h1>
-            <Box sx={{ mt: 3 }}>
-              <Button
-                sx={{
-                  mr: 3,
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  borderRadius: 5,
-                }}
-                variant="outlined"
-                startIcon={<ContentPasteIcon />}
-                onClick={handlePasteClick}
-              >
-                Paste Text
-              </Button>
-              <input
-        type="file"
-        accept=".pdf"
-        onChange={handleFileChange}
-        style={{ display: 'none' }}
-        ref={fileInputRef}
-      />
-              <Button
-                sx={{
-                  fontWeight: "bold",
-                  textTransform: "none",
-                  borderRadius: 5,
-                }}
-                variant="outlined"
-                startIcon={<PublishIcon />}
-                onClick={() => fileInputRef.current?.click()}
-              >
-                Upload Document
-              </Button>
-            </Box>
-          </div>:null}
+          {isEditorEmpty ? (
+            <div className="placeholder-container">
+              <h1 className="placeholder-text" onClick={focusEditor}>
+                Start by writing, pasting (Ctrl + V) text, or uploading a
+                document(pdf)
+              </h1>
+              <Box sx={{ mt: 3 }}>
+                <Button
+                  sx={{
+                    mr: 3,
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 5,
+                  }}
+                  variant="outlined"
+                  startIcon={<ContentPasteIcon />}
+                  onClick={handlePasteClick}
+                >
+                  Paste Text
+                </Button>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleFileChange}
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+                />
+                <Button
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: 5,
+                  }}
+                  variant="outlined"
+                  startIcon={<PublishIcon />}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  Upload Document
+                </Button>
+              </Box>
+            </div>
+          ) : null}
         </section>
 
         <div className="editor-options">
-         <Button
+          <Button
             variant="contained"
             sx={{ textTransform: "none", borderRadius: 5 }}
           >
             Check Error
           </Button>
-          <Divider orientation="vertical" flexItem /> {isCheckingGrammar ? (
+          <Divider orientation="vertical" flexItem />{" "}
+          {isCheckingGrammar ? (
             <CircularProgress size={30} />
           ) : (
             <div className="error-count-container">
@@ -291,7 +292,8 @@ const Editor = () => {
             </div>
           )}
           <Divider orientation="vertical" flexItem />
-          <div>{wordCount} Words</div> <Divider orientation="vertical" flexItem />
+          <div>{wordCount} Words</div>{" "}
+          <Divider orientation="vertical" flexItem />
           <FileDownloadIcon /> <ContentCopyIcon />{" "}
         </div>
       </Box>
