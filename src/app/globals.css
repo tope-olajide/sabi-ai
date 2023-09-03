@@ -25,19 +25,12 @@ body {
   display: flex;
   align-items: center;
   padding: 20px;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
-.modes-section p {
-  margin: 15px;
-  font-weight: 500;
-  cursor: pointer;
-}
-.modes-section p:hover {
-  border-bottom: 2px solid green;
-}
-.active {
-  border-bottom: 2px solid green;
-}
+
+
 .input-container,
 .output-container {
   width: 100%;
