@@ -46,30 +46,30 @@ const Editor = () => {
   const [exceptionList, setExceptionList] = useState([""]);
   const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const checkWords = async () => {
-    setIsEditing(false);
+  const checkForErrors = async () => {
+    /*   setIsEditing(false);
     const textData = editorRef.current!.innerText;
     if (!textData.trim()) {
       return;
-    }
+    } */
     try {
       setIsCheckingGrammar(true);
-      const response = await fetch("http://localhost:5000/grammar-check", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ textData: editorRef.current!.innerText }),
-      });
+      const response = await fetch(
+        "https://sability-ai.onrender.com/grammar-check",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ textData: editorRef.current!.innerText }),
+        }
+      );
       const result = await response.json();
       console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
       const newHTMLData = result.queryResult.response;
-      // if the isEditing is still false, overwrite the text in the editor otherwise do nothing
-      if (isEditing === false) {
-        editorRef.current!.innerHTML = "";
-        editorRef.current!.innerHTML = newHTMLData;
-      }
+      editorRef.current!.innerHTML = "";
+      editorRef.current!.innerHTML = newHTMLData;
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
@@ -108,20 +108,20 @@ const Editor = () => {
     } else {
       setIsEditorEmpty(true);
     }
-    if (!isEditing) {
+    /*     if (!isEditing) {
       setIsEditing(true);
-    }
+    } */
 
-    clearTimeout(timer);
+    /*  clearTimeout(timer);
     const newTimer: NodeJS.Timeout = setTimeout(async () => {
-      await checkWords();
+      await checkForErrors();
 
-      console.log(editorRef.current!.innerText);
+      console.log(editorRef.current!.innerText); 
     }, 1000);
-    timer = newTimer;
+    timer = newTimer;*/
   };
 
-  const handlePaste = (e:any) => {
+  const handlePaste = (e: any) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text/plain");
     const selection = window.getSelection();
@@ -133,6 +133,7 @@ const Editor = () => {
     range.collapse(true);
     selection!.removeAllRanges();
     selection!.addRange(range);
+    setIsEditorEmpty(false);
   };
 
   const focusEditor = () => {
@@ -148,9 +149,9 @@ const Editor = () => {
     editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
   }, []); */
 
-  useEffect(() => {
-    checkWords();
-  }, [exceptionList]);
+  /*   useEffect(() => {
+    checkForErrors();
+  }, [exceptionList]); */
   useEffect(() => {
     const handleClickOnHighlight = (event: any) => {
       if (event.target.classList.contains("highlight")) {
@@ -277,24 +278,23 @@ const Editor = () => {
         </section>
 
         <div className="editor-options">
-          <Button
-            variant="contained"
-            sx={{ textTransform: "none", borderRadius: 5 }}
-          >
-            Check Error
-          </Button>
-          <Divider orientation="vertical" flexItem />{" "}
           {isCheckingGrammar ? (
             <CircularProgress size={30} />
           ) : (
-            <div className="error-count-container">
-              <span></span> <p className="error-count">20</p>{" "}
-            </div>
+            <Button
+              variant="contained"
+              sx={{ textTransform: "none" }}
+              onClick={checkForErrors}
+            >
+              Check for Errors
+            </Button>
           )}
-          <Divider orientation="vertical" flexItem />
+          {/* <Divider orientation="vertical" flexItem />{" "} */}
+
+          {/*  <Divider orientation="vertical" flexItem />
           <div>{wordCount} Words</div>{" "}
           <Divider orientation="vertical" flexItem />
-          <FileDownloadIcon /> <ContentCopyIcon />{" "}
+          <FileDownloadIcon /> <ContentCopyIcon />{" "} */}
         </div>
       </Box>
 
