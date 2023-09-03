@@ -54,7 +54,7 @@ const Editor = () => {
     }
     try {
       setIsCheckingGrammar(true);
-      const response = await fetch("http://localhost:5000/grammar-chec", {
+      const response = await fetch("http://localhost:5000/grammar-check", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -121,7 +121,7 @@ const Editor = () => {
     timer = newTimer;
   };
 
-  const handlePaste = (e) => {
+  const handlePaste = (e:any) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text/plain");
     const selection = window.getSelection();
