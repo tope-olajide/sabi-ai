@@ -91,7 +91,7 @@ const Paraphraser = () => {
         }
         try {
             setIsParaphrasing(true);
-          const response = await fetch("http://localhost:5000/paraphrase-text", {
+          const response = await fetch("https://sability-ai.onrender.com/paraphrase-text", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
