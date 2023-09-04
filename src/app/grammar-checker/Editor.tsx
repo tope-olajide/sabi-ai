@@ -47,11 +47,6 @@ const Editor = () => {
   const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const checkForErrors = async () => {
-    /*   setIsEditing(false);
-    const textData = editorRef.current!.innerText;
-    if (!textData.trim()) {
-      return;
-    } */
     try {
       setIsCheckingGrammar(true);
       const response = await fetch(
@@ -68,8 +63,9 @@ const Editor = () => {
       console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
       const newHTMLData = result.queryResult.response;
+      let outputString = newHTMLData.replace(/"""+/g, '');
       editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = newHTMLData;
+      editorRef.current!.innerHTML = outputString;
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
@@ -108,17 +104,6 @@ const Editor = () => {
     } else {
       setIsEditorEmpty(true);
     }
-    /*     if (!isEditing) {
-      setIsEditing(true);
-    } */
-
-    /*  clearTimeout(timer);
-    const newTimer: NodeJS.Timeout = setTimeout(async () => {
-      await checkForErrors();
-
-      console.log(editorRef.current!.innerText); 
-    }, 1000);
-    timer = newTimer;*/
   };
 
   const handlePaste = (e: any) => {
@@ -145,13 +130,7 @@ const Editor = () => {
   useEffect(() => {
     focusEditor();
   }, []);
-  /*   useEffect(() => {
-    editorRef.current!.innerText = 'Sability AI help you to improve your content on millions of websites! Write or paste your sentense to get it checked for gramar and spelling errors. If there is a mistake, the app will highlight it. Just hover over the correction to review and acept it!'
-  }, []); */
-
-  /*   useEffect(() => {
-    checkForErrors();
-  }, [exceptionList]); */
+ 
   useEffect(() => {
     const handleClickOnHighlight = (event: any) => {
       if (event.target.classList.contains("highlight")) {
@@ -239,14 +218,16 @@ const Editor = () => {
                 Start by writing, pasting (Ctrl + V) text, or uploading a
                 document(pdf)
               </h1>
-              <Box sx={{ mt: 3 }}>
+              <Box sx={{ mt: 1 }}>
                 <Button
                   sx={{
                     mr: 3,
+                    mt: 1,
                     fontWeight: "bold",
                     textTransform: "none",
                     borderRadius: 5,
                   }}
+                  size="small"
                   variant="outlined"
                   startIcon={<ContentPasteIcon />}
                   onClick={handlePasteClick}
@@ -265,7 +246,9 @@ const Editor = () => {
                     fontWeight: "bold",
                     textTransform: "none",
                     borderRadius: 5,
+                    mt: 1,
                   }}
+                  size="small"
                   variant="outlined"
                   startIcon={<PublishIcon />}
                   onClick={() => fileInputRef.current?.click()}
@@ -284,7 +267,8 @@ const Editor = () => {
             <Button
               variant="contained"
               sx={{ textTransform: "none" }}
-              onClick={checkForErrors}
+                onClick={checkForErrors}
+                size="small"
             >
               Check for Errors
             </Button>
