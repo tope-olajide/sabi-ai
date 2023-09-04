@@ -82,33 +82,52 @@ const Paraphraser = () => {
       setIsEditorEmpty(true);
     }
     setInputWordCount(countWords(editorRef.current!.innerText));
-    };
-    const [isParaphrasing, setIsParaphrasing] = useState(false); 
-    const paraphraseText = async () => {
-        const textData = editorRef.current!.innerText;
-        if (!textData.trim()) {
-          return;
+  };
+  const [isParaphrasing, setIsParaphrasing] = useState(false);
+  const paraphraseText = async () => {
+    const textData = editorRef.current!.innerText;
+    if (!textData.trim()) {
+      return;
+    }
+    try {
+      setIsParaphrasing(true);
+      const response = await fetch(
+        "https://sability-ai.onrender.com/paraphrase-text",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            textData: editorRef.current!.innerText,
+            mode: value,
+          }),
         }
-        try {
-            setIsParaphrasing(true);
-          const response = await fetch("https://sability-ai.onrender.com/paraphrase-text", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ textData: editorRef.current!.innerText, mode:value }),
-          });
-          const result = await response.json();
-          console.log(result.queryResult.response);
-          setIsParaphrasing(false);
-          const paraphrasedText = result.queryResult.response;
-          outputRef.current!.innerHTML = "";
-          outputRef.current!.innerHTML = paraphrasedText;
-          
-        } catch (error) {
-            setIsParaphrasing(false);
-          console.log(error);
-        }
+      );
+      const result = await response.json();
+      console.log(result.queryResult.response);
+      setIsParaphrasing(false);
+      const paraphrasedText = result.queryResult.response;
+      outputRef.current!.innerHTML = "";
+      outputRef.current!.innerHTML = paraphrasedText;
+    } catch (error) {
+      setIsParaphrasing(false);
+      console.log(error);
+    }
+  };
+  const handlePaste = (e: any) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    const selection = window.getSelection();
+    const range = selection!.getRangeAt(0);
+    range.deleteContents();
+    const textNode = document.createTextNode(text);
+    range.insertNode(textNode);
+    range.setStartAfter(textNode);
+    range.collapse(true);
+    selection!.removeAllRanges();
+    selection!.addRange(range);
+    setIsEditorEmpty(false);
   };
   return (
     <>
@@ -160,7 +179,7 @@ const Paraphraser = () => {
                   control={<Radio />}
                   label="Academic"
                 />
-                <FormControlLabel
+                 <FormControlLabel
                   value="Creative"
                   control={<Radio />}
                   label="Creative"
@@ -174,7 +193,7 @@ const Paraphraser = () => {
                   value="Shorten"
                   control={<Radio />}
                   label="Shorten"
-                />
+                /> 
               </RadioGroup>
             </FormControl>
           </div>
@@ -185,14 +204,15 @@ const Paraphraser = () => {
                 contentEditable
                 className="editable"
                 onInput={(e: any) => handleEditorChange(e)}
+                onPaste={handlePaste}
               />
 
               <div className="sub_div">
                 {isEditorEmpty ? (
-                  <Box>
+                  <Box sx={{ display:'flex', justifyContent:'space-between', width:'100%'}}>
                     <Button
                       sx={{
-                        mr: 3,
+                        
                         fontWeight: "bold",
                         textTransform: "none",
                         borderRadius: 5,
@@ -200,6 +220,7 @@ const Paraphraser = () => {
                       variant="outlined"
                       startIcon={<ContentPasteIcon />}
                       onClick={handlePasteClick}
+                      size="small"
                     >
                       Paste Text
                     </Button>
@@ -216,25 +237,28 @@ const Paraphraser = () => {
                         textTransform: "none",
                         borderRadius: 5,
                       }}
+                      size="small"
                       variant="outlined"
                       startIcon={<PublishIcon />}
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      Upload Document
+                      Upload PDF
                     </Button>
                   </Box>
-                ) : (
+                ) : <Box  sx={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center'}}>
                   <p>Words:{inputWordCount}</p>
-                )}
-
-                <Button
+                    
+                    <Button
                   sx={{ textTransform: "Capitalize" }}
-                                  variant="contained"
-                                  onClick={paraphraseText}
-                                  disabled={isParaphrasing}
+                  variant="contained"
+                  onClick={paraphraseText}
+                  disabled={isParaphrasing}
                 >
                   Paraphrase
                 </Button>
+                </Box>}
+
+                
               </div>
             </section>
             <section className="output-container">

@@ -18,7 +18,9 @@ body {
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
     rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
     overflow: auto;
+    border-radius: 15px;
 }
+
 .modes-section, .summarize-length-section, .translate-header-section {
   width: 100%;
   height: 60px;
@@ -28,12 +30,12 @@ body {
   padding: 20px;
   overflow-x: auto;
   overflow-y: hidden;
-  
 }
 
 .summarize-length-section{
   justify-content: center;
 }
+
 .translate-header-section{
   justify-content: space-around;
 }
@@ -47,7 +49,9 @@ body {
 
 .input-output-section {
   display: flex;
-  
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .input-container {
@@ -57,8 +61,7 @@ body {
   justify-content: space-between;
 }
 .editable {
-  height: 90%;
-  overflow: auto;
+overflow-y: auto;
   outline: none;
 }
 .sub_div {
@@ -68,17 +71,18 @@ body {
   align-items: center;
   justify-content: space-between;
 }
-.generate_sub_div{
+.generate_sub_div {
   justify-content: center;
 }
 .output-container {
   border-left: 1px solid rgba(0, 0, 0, 0.5);
 }
-.output{
-  height: 95%;
+
+.output {
   overflow: auto;
 }
-.summarize-mode{
+
+.summarize-mode {
   width: 100%;
   height: 60px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -88,10 +92,54 @@ body {
   justify-content: center;
 }
 
-.slider-section{
+.slider-section {
   display: flex;
   align-items: center;
   margin-left: 20px;
   justify-content: space-between;
   width: 300px;
+}
+
+@media only screen and (max-width: 720px) {
+  .input-output-container {
+    width: 70vw;
+    height: 100vh;
+  } 
+  .input-output-section {
+flex-direction: column;
+  }
+  .input-container,
+.output-container {
+border: none;
+}
+
+.input-container{
+
+  border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+}
+
+}
+
+@media only screen and (max-width: 280px) {
+  .input-output-container {
+    width: 64vw;
+    height: 85vh;
+    margin-top: 0px;
+  } 
+  .input-output-section {
+flex-direction: column;
+  }
+  .input-container,
+  .output-container {
+    width: 100%;
+    height: 270px;
+    padding: 4px;
+  }
+  .input-container{
+    overflow-y: auto;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+  }
+  .sub_div {
+    height: 40px;
+  }
 }

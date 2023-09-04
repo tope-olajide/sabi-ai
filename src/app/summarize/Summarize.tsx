@@ -79,7 +79,8 @@ const Summarize = () => {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: 'center',
-                width:'100%'
+                width: '100%',
+                padding:4
               }}
             >
               <FormLabel sx={{ width:'150px', mr:2 }}>Summary Length</FormLabel>
@@ -137,13 +138,15 @@ const Summarize = () => {
               </div>
             </section>
             <section className="output-container">
-              <div className="output" ref={outputRef}></div>
-              <div className="sub_div">
-                {/* <p>Words:34</p> */}
+              <div className="output" ref={outputRef}>
+                
+              </div>
+              {/* <div className="sub_div">
+                
                 <p>0 Sentences </p>
 
                 <p>0 Words</p>
-              </div>
+              </div> */}
             </section>
           </section>
         </section>
