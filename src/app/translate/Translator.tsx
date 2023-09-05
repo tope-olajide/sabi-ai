@@ -7,14 +7,13 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { useState, ChangeEvent, useRef } from "react";
+import { useState, ChangeEvent, useRef, useEffect } from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import PublishIcon from "@mui/icons-material/Publish";
 
 const Translator = () => {
-  const [value, setValue] = useState("Short");
   const editorRef = useRef<HTMLDivElement | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -32,11 +31,11 @@ const Translator = () => {
       return;
     }
     if (!language) {
-      return alert('Please select a target language!')
+      return alert("Please select a target language!");
     }
     try {
       setIsTranslating(true);
-      const response = await fetch("http://localhost:5000/translate-text", {
+      const response = await fetch("https://sability-ai.onrender.com/translate-text", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -166,6 +165,17 @@ const Translator = () => {
                 <MenuItem value={"Portuguese (European and Brazilian)"}>
                   Portuguese (European and Brazilian)
                 </MenuItem>
+                <MenuItem value={"Arabic"}>Arabic</MenuItem>
+                <MenuItem value={"Hindi"}>Hindi</MenuItem>
+                <MenuItem value={"Turkish"}>Turkish</MenuItem>
+                <MenuItem value={"Swedish"}>Swedish</MenuItem>
+                <MenuItem value={"Norwegian"}>Norwegian</MenuItem>
+                <MenuItem value={"Danish"}>Danish</MenuItem>
+                <MenuItem value={"Finnish"}>Finnish</MenuItem>
+                <MenuItem value={"Polish"}>Polish</MenuItem>
+                <MenuItem value={"Greek"}>Greek</MenuItem>
+                <MenuItem value={"Romanian"}>Romanian</MenuItem>
+                <MenuItem value={"Czech"}>Czech</MenuItem>
               </Select>
             </FormControl>
           </div>
@@ -221,13 +231,14 @@ const Translator = () => {
                     onClick={translateText}
                     disabled={isTranslating}
                   >
-                    {isTranslating?'Translating...':'Translate'}
+                    {isTranslating ? "Translating..." : "Translate"}
                   </Button>
                 )}
               </div>
             </section>
             <section className="output-container">
               <div className="output" ref={outputRef}></div>
+
               <div className="sub_div">
                 {/*  <p>0 Sentences </p>
 

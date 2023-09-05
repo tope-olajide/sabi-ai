@@ -81,6 +81,7 @@ body {
 
 .output {
   overflow: auto;
+  height: 300px;
 }
 
 .summarize-mode {
@@ -99,6 +100,15 @@ body {
   margin-left: 20px;
   justify-content: space-between;
   width: 300px;
+}
+
+.placeholder-text {
+  font-style: italic;
+  font-weight: 600;
+  opacity: 0.3;
+  cursor:default;
+  font-size: 18px;
+  margin: 0;
 }
 
 @media only screen and (max-width: 720px) {
