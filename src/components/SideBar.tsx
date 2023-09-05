@@ -145,7 +145,10 @@ export default function SideBar({ children, pageTitle }:any) {
           </Box>
         </Toolbar>
       </AppBar>
-      <Drawer variant="permanent" open={open}>
+      
+      <Drawer variant="permanent" open={open} sx={{
+       /*  display: { xs: 'none', sm: 'none' } */
+      }}>
         <DrawerHeader></DrawerHeader>
         <Divider />
         <List>
@@ -159,9 +162,8 @@ export default function SideBar({ children, pageTitle }:any) {
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <Link
                 underline="none"
-                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize": index == 3 ? "#" : "#"}
+                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize": index == 3 ? "/translate" : "#"}
               >
-                {" "}
                 <ListItemButton
                   sx={{
                     minHeight: 48,

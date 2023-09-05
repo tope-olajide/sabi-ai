@@ -9,7 +9,6 @@ body {
   overflow-x: hidden;
 }
 
-
 .input-output-container {
   width: 80%;
   height: 440px;
@@ -17,11 +16,13 @@ body {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
     rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
-    overflow: auto;
-    border-radius: 15px;
+
+  border-radius: 15px;
 }
 
-.modes-section, .summarize-length-section, .translate-header-section {
+.modes-section,
+.summarize-length-section,
+.translate-header-section {
   width: 100%;
   height: 60px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -32,11 +33,11 @@ body {
   overflow-y: hidden;
 }
 
-.summarize-length-section{
+.summarize-length-section {
   justify-content: center;
 }
 
-.translate-header-section{
+.translate-header-section {
   justify-content: space-around;
 }
 
@@ -61,15 +62,15 @@ body {
   justify-content: space-between;
 }
 .editable {
-overflow-y: auto;
+  overflow-y: auto;
   outline: none;
 }
 .sub_div {
-  height: 20px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-top: 10px;
 }
 .generate_sub_div {
   justify-content: center;
@@ -104,20 +105,18 @@ overflow-y: auto;
   .input-output-container {
     width: 70vw;
     height: 100vh;
-  } 
+  }
   .input-output-section {
-flex-direction: column;
+    flex-direction: column;
   }
   .input-container,
-.output-container {
-border: none;
-}
+  .output-container {
+    border: none;
+  }
 
-.input-container{
-
-  border-bottom: 1px solid rgba(0, 0, 0, 0.274);
-}
-
+  .input-container {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.274);
+  }
 }
 
 @media only screen and (max-width: 280px) {
@@ -125,9 +124,9 @@ border: none;
     width: 64vw;
     height: 85vh;
     margin-top: 0px;
-  } 
+  }
   .input-output-section {
-flex-direction: column;
+    flex-direction: column;
   }
   .input-container,
   .output-container {
@@ -135,7 +134,7 @@ flex-direction: column;
     height: 270px;
     padding: 4px;
   }
-  .input-container{
+  .input-container {
     overflow-y: auto;
     border-bottom: 1px solid rgba(0, 0, 0, 0.274);
   }
