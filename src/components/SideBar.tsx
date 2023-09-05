@@ -162,7 +162,7 @@ export default function SideBar({ children, pageTitle }:any) {
             <ListItem key={text} disablePadding sx={{ display: "block" }}>
               <Link
                 underline="none"
-                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize": index == 3 ? "/translate" : "#"}
+                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize": index == 3 ? "/translate" : "/generate-content"}
               >
                 <ListItemButton
                   sx={{
