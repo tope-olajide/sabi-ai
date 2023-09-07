@@ -9,6 +9,7 @@ import {
   Button,
   Grid,
   CircularProgress,
+  Card,
 } from "@mui/material";
 import React, {
   ChangeEvent,
@@ -27,6 +28,7 @@ import Divider from "@mui/material/Divider";
 const Editor = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   function excemptWord(htmlString: string, exceptionList: string | string[]) {
     const parser = new DOMParser();
@@ -63,7 +65,7 @@ const Editor = () => {
       console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
       const newHTMLData = result.queryResult.response;
-      let outputString = newHTMLData.replace(/"""+/g, '');
+      let outputString = newHTMLData.replace(/"""+/g, "");
       editorRef.current!.innerHTML = "";
       editorRef.current!.innerHTML = outputString;
     } catch (error) {
@@ -104,6 +106,8 @@ const Editor = () => {
     } else {
       setIsEditorEmpty(true);
     }
+    setIsTyping(true)
+    setWordCount(countWords(editorRef.current!.innerText))
   };
 
   const handlePaste = (e: any) => {
@@ -130,7 +134,7 @@ const Editor = () => {
   useEffect(() => {
     focusEditor();
   }, []);
- 
+
   useEffect(() => {
     const handleClickOnHighlight = (event: any) => {
       if (event.target.classList.contains("highlight")) {
@@ -203,7 +207,7 @@ const Editor = () => {
   };
   return (
     <>
-      <Box className="editor-section">
+      <Card className="editor-section" onClick={focusEditor}>
         <section>
           <div
             contentEditable
@@ -260,27 +264,30 @@ const Editor = () => {
           ) : null}
         </section>
 
-        <div className="editor-options">
-          {isCheckingGrammar ? (
-            <CircularProgress size={30} />
-          ) : (
-            <Button
-              variant="contained"
-              sx={{ textTransform: "none" }}
+        {isEditorEmpty ? null : (
+          <Card className="editor-options">
+            {isCheckingGrammar ? (
+              <CircularProgress size={30} />
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ textTransform: "none" }}
                 onClick={checkForErrors}
                 size="small"
-            >
-              Check for Errors
-            </Button>
-          )}
-          {/* <Divider orientation="vertical" flexItem />{" "} */}
-
-          {/*  <Divider orientation="vertical" flexItem />
-          <div>{wordCount} Words</div>{" "}
+              >
+                Check for Errors
+              </Button>
+            )}
+            <Divider orientation="vertical" flexItem />{" "}
+            <div>{wordCount} Words</div>
+            {/* <Divider orientation="vertical" flexItem />{" "} */}
+            {/*  
+         {" "}
           <Divider orientation="vertical" flexItem />
           <FileDownloadIcon /> <ContentCopyIcon />{" "} */}
-        </div>
-      </Box>
+          </Card>
+        )}
+      </Card>
 
       <Popover
         id={id}
