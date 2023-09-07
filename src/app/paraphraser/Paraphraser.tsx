@@ -10,6 +10,7 @@ import { ChangeEvent, useRef, useState } from "react";
 import { Box } from "@mui/material";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import PublishIcon from "@mui/icons-material/Publish";
+import MobileNav from "@/components/MobileNav";
 
 const Paraphraser = () => {
   const [value, setValue] = useState("Normal");
@@ -132,7 +133,9 @@ const Paraphraser = () => {
   return (
     <>
       <SideBar pageTitle={"Paraphraser"}>
+      
         <section className="input-output-container">
+          
           <div className="modes-section">
             <FormControl
               sx={{

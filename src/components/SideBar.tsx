@@ -25,6 +25,8 @@ import Translate from "@mui/icons-material/Translate";
 import ShortTextIcon from "@mui/icons-material/ShortText";
 import AccountIcon from "@mui/icons-material/AccountCircle";
 import Link from "@mui/material/Link";
+import MobileNav from "./MobileNav";
+import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -115,17 +117,7 @@ export default function SideBar({ children, pageTitle }:any) {
       <CssBaseline />
       <AppBar position="fixed">
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleSideBar}
-            edge="start"
-            sx={{
-              marginRight: 2,
-            }}
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-          </IconButton>
+          
           <Box
             sx={{
               display: "flex",
@@ -134,10 +126,30 @@ export default function SideBar({ children, pageTitle }:any) {
               width: "100%",
             }}
           >
-            <Typography variant="h6" noWrap component="p">
-              Sability AI
-            </Typography>
-            <Typography noWrap component="p" sx={{ fontWeight: 600 }}>
+            <Box sx={{display:'flex', alignItems:'center'}}>
+              <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleSideBar}
+            edge="start"
+            sx={{
+              marginRight: 3,
+              display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } 
+            }}
+          >
+            {open ? <CloseIcon /> : <MenuIcon />}
+              </IconButton>
+              <Box sx={{display:'flex', alignItems:'center'}}><EngineeringOutlinedIcon />
+<Typography variant="h6" component="div">
+           Sability AI
+              </Typography>
+              </Box>
+          
+              
+            </Box>
+            
+
+            <Typography noWrap component="p" sx={{ fontWeight: 600,display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } }}>
               {pageTitle}
             </Typography>
 
@@ -147,7 +159,7 @@ export default function SideBar({ children, pageTitle }:any) {
       </AppBar>
       
       <Drawer variant="permanent" open={open} sx={{
-       /*  display: { xs: 'none', sm: 'none' } */
+         display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } 
       }}>
         <DrawerHeader></DrawerHeader>
         <Divider />
@@ -223,8 +235,15 @@ export default function SideBar({ children, pageTitle }:any) {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      
+      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         <Toolbar />
+        <section  className="mobile-nav-container">
+          <MobileNav pageTitle={pageTitle} />
+       </section>
+          
+    
+        
         {children}
       </Box>
     </Box>
