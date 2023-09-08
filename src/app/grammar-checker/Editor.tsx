@@ -9,6 +9,7 @@ import {
   Button,
   Grid,
   CircularProgress,
+  Card,
 } from "@mui/material";
 import React, {
   ChangeEvent,
@@ -27,6 +28,13 @@ import Divider from "@mui/material/Divider";
 const Editor = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [wordCount, setWordCount] = useState(0);
+  const [exceptionList, setExceptionList] = useState([""]);
+  const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
+  const [selectedWord, setSelectedWord] = useState<SelectedWord>();
+  const [anchorEl, setAnchorEl] = useState<HTMLSpanElement | null>(null);
+  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
 
   function excemptWord(htmlString: string, exceptionList: string | string[]) {
     const parser = new DOMParser();
@@ -43,11 +51,8 @@ const Editor = () => {
     return doc.body.innerHTML;
   }
 
-  const [exceptionList, setExceptionList] = useState([""]);
-  const [isCheckingGrammar, setIsCheckingGrammar] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const checkForErrors = async () => {
-    try {
+         try {
       setIsCheckingGrammar(true);
       const response = await fetch(
         "https://sability-ai.onrender.com/grammar-check",
@@ -62,14 +67,19 @@ const Editor = () => {
       const result = await response.json();
       console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
-      const newHTMLData = result.queryResult.response;
-      let outputString = newHTMLData.replace(/"""+/g, '');
+      if (!isTyping) {
+        const newHTMLData = result.queryResult.response;
+      let outputString = newHTMLData.replace(/"""+/g, "");
       editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = outputString;
+        editorRef.current!.innerHTML = excemptWord(outputString, exceptionList);
+        
+      }
+
+
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
-    }
+    } 
   };
   const setExcemption = () => {
     const exceptionListCopy = [...exceptionList, selectedWord!.word];
@@ -81,8 +91,6 @@ const Editor = () => {
     errorType: string;
     word: string;
   };
-  const [selectedWord, setSelectedWord] = useState<SelectedWord>();
-  const [anchorEl, setAnchorEl] = useState<HTMLSpanElement | null>(null);
 
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
@@ -96,14 +104,15 @@ const Editor = () => {
     console.log(editorRef.current!.innerText);
     handleClose();
   };
-  const [isEditorEmpty, setIsEditorEmpty] = useState(true);
-  let timer: NodeJS.Timeout;
+
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
+
     if (editorRef.current?.innerHTML) {
       setIsEditorEmpty(false);
     } else {
       setIsEditorEmpty(true);
     }
+    setWordCount(countWords(editorRef.current!.innerText));
   };
 
   const handlePaste = (e: any) => {
@@ -119,6 +128,7 @@ const Editor = () => {
     selection!.removeAllRanges();
     selection!.addRange(range);
     setIsEditorEmpty(false);
+    setWordCount(countWords(editorRef.current!.innerText));
   };
 
   const focusEditor = () => {
@@ -127,10 +137,30 @@ const Editor = () => {
     }
   };
 
+/* 
+  useEffect(() => {
+    let debounceTimer: NodeJS.Timeout;
+    if (!isTyping) {
+      debounceTimer = setTimeout(async () => {
+        await checkForErrors()
+      }, 2000); 
+    }
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, [content, isTyping]); */
+
   useEffect(() => {
     focusEditor();
   }, []);
- 
+
+  useEffect(() => {
+
+    const result = excemptWord(editorRef.current!.innerHTML, exceptionList)
+    editorRef.current!.innerHTML = "";
+    editorRef.current!.innerHTML = result;
+  }, [exceptionList]);
+
   useEffect(() => {
     const handleClickOnHighlight = (event: any) => {
       if (event.target.classList.contains("highlight")) {
@@ -146,7 +176,7 @@ const Editor = () => {
       document.removeEventListener("click", handleClickOnHighlight);
     };
   }, []);
-  const [wordCount, setWordCount] = useState(0);
+
   const countWords = (text: string) => {
     const words = text.split(" ");
     const filteredWords = words.filter((word) => word.trim() !== "");
@@ -195,6 +225,7 @@ const Editor = () => {
           selection.addRange(range);
           div.focus();
           setIsEditorEmpty(false);
+          setWordCount(countWords(editorRef.current!.innerText));
         }
       }
     } catch (error) {
@@ -203,7 +234,7 @@ const Editor = () => {
   };
   return (
     <>
-      <Box className="editor-section">
+      <div className="editor-section" onClick={focusEditor}>
         <section>
           <div
             contentEditable
@@ -216,7 +247,7 @@ const Editor = () => {
             <div className="placeholder-container">
               <h1 className="placeholder-text" onClick={focusEditor}>
                 Start by writing, pasting (Ctrl + V) text, or uploading a
-                document(pdf)
+                document(pdf), then click the Check for Errors button.
               </h1>
               <Box sx={{ mt: 1 }}>
                 <Button
@@ -260,27 +291,30 @@ const Editor = () => {
           ) : null}
         </section>
 
-        <div className="editor-options">
-          {isCheckingGrammar ? (
-            <CircularProgress size={30} />
-          ) : (
-            <Button
-              variant="contained"
-              sx={{ textTransform: "none" }}
+        {isEditorEmpty ? null : (
+          <Card className="editor-options">
+            {isCheckingGrammar ? (
+              <CircularProgress size={30} />
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ textTransform: "none" }}
                 onClick={checkForErrors}
                 size="small"
-            >
-              Check for Errors
-            </Button>
-          )}
-          {/* <Divider orientation="vertical" flexItem />{" "} */}
-
-          {/*  <Divider orientation="vertical" flexItem />
-          <div>{wordCount} Words</div>{" "}
+              >
+                Check for Errors
+              </Button>
+            )}
+            <Divider orientation="vertical" flexItem />{" "}
+            <div>{wordCount} Words</div>
+            {/* <Divider orientation="vertical" flexItem />{" "} */}
+            {/*  
+         {" "}
           <Divider orientation="vertical" flexItem />
           <FileDownloadIcon /> <ContentCopyIcon />{" "} */}
-        </div>
-      </Box>
+          </Card>
+        )}
+      </div>
 
       <Popover
         id={id}

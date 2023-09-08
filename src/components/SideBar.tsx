@@ -27,6 +27,15 @@ import AccountIcon from "@mui/icons-material/AccountCircle";
 import Link from "@mui/material/Link";
 import MobileNav from "./MobileNav";
 import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { useContext } from "react";
+import { ColorModeContext } from "./ThemeRegistry/ThemeRegistry";
+
+
+
+
+
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -100,6 +109,7 @@ const Drawer = styled(MuiDrawer, {
 
 export default function SideBar({ children, pageTitle }:any) {
   const theme = useTheme();
+  const colorMode = useContext(ColorModeContext);
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -153,7 +163,12 @@ export default function SideBar({ children, pageTitle }:any) {
               {pageTitle}
             </Typography>
 
-            <div></div>
+            <Box>
+            {theme.palette.mode} mode
+      <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>

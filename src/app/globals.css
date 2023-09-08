@@ -110,13 +110,14 @@ body {
   font-size: 18px;
   margin: 0;
 }
-.mobile-nav-container{
-  display: flex;
-  width: 95vw;
 
-margin: 0 auto;
-}
 @media only screen and (max-width: 720px) {
+  .mobile-nav-container{
+    display: flex;
+    width: 97.5vw;
+  
+  margin: 0 auto;
+  }
   .input-output-container {
     width: 95vw;
     height: 100vh;

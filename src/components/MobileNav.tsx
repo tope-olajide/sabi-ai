@@ -8,6 +8,7 @@ import ShortTextIcon from "@mui/icons-material/ShortText";
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Link from "@mui/material/Link";
+import Card from "@mui/material/Card";
 export default function MobileNav({ pageTitle }: any) {
   const [value, setValue] = useState(0);
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function MobileNav({ pageTitle }: any) {
   };
 
   return (
-    <Box
+    <Card
       sx={{
         width: "100%",
         display: {
@@ -65,6 +66,6 @@ export default function MobileNav({ pageTitle }: any) {
           <Tab icon={<EditNoteIcon />} label="Content Generator" />
         </Link>
       </Tabs>
-    </Box>
+    </Card>
   );
 }
