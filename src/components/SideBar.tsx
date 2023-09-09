@@ -171,10 +171,10 @@ export default function SideBar({ children, pageTitle }: any) {
                   {open ? <CloseIcon /> : <MenuIcon />}
                 </IconButton>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <EngineeringOutlinedIcon />
-                  <Typography variant="h6" component="div">
-                    Sability AI
-                  </Typography>
+                 {/*  <EngineeringOutlinedIcon /> */}
+                  
+                   <h3 className="logo">Sability AI</h3> 
+                  
                 </Box>
               </Box>
 
