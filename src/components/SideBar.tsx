@@ -362,9 +362,9 @@ export default function SideBar({ children, pageTitle }: any) {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                Sability, originating from Nigerian Pidgin English's term
-                'Sabi,' which conveys the concept of skill and capability, is an
-                open-source grammar-checking tool developed using{" "}
+                Sability, originating from Nigerian Pidgin English&apos;s term
+                &apos;Sabi&apos;, which conveys the concept of skill and capability, is an
+                open-source grammar-checking tool developed using {" "}
                 <Link href="https://mindsdb.com/">MindsDB</Link>. This versatile
                 tool offers multiple features. <br /> <br /> It can be employed
                 for summarizing text documents in various styles, and facilitate
