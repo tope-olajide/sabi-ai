@@ -1,10 +1,22 @@
-import ContentGenerator from "./ContentGenerator"
+import Footer from "@/components/Footer";
+import ContentGenerator from "./ContentGenerator";
+import Box from "@mui/material/Box";
 
 const ContentGeneratorPage = () => {
-    return (
-        <>
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          justifyContent: "space-between",
+        }}
+      >
         <ContentGenerator />
-        </>
-    )
-}
-export default ContentGeneratorPage
+        <Footer />
+      </Box>
+    </>
+  );
+};
+export default ContentGeneratorPage;

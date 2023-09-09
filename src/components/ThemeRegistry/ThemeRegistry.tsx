@@ -5,29 +5,32 @@ import CssBaseline from "@mui/material/CssBaseline";
 import NextAppDirEmotionCacheProvider from "./EmotionCache";
 import { darkTheme, lightTheme } from "./theme";
 import { ReactNode, createContext, useMemo, useState } from "react";
-import { ModifierFlags } from "typescript";
 
- export const ColorModeContext = createContext({ toggleColorMode: () => {} });
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 export default function ThemeRegistry({ children }: { children: ReactNode }) {
-  const [mode, setMode] = useState<"light" | "dark">("light");
+  const currentMode = localStorage.getItem("currentMode") || "dark";
+  const [mode, setMode] = useState<string>(currentMode);
   const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
-        setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+        setMode((prevMode) => {
+          const newMode = prevMode === "light" ? "dark" : "light";
+          localStorage.setItem("currentMode", newMode);
+          return newMode;
+        });
       },
     }),
     []
   );
-    return (
-        <ColorModeContext.Provider value={colorMode}>
-    <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
-      <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-            </NextAppDirEmotionCacheProvider>
-            </ColorModeContext.Provider>
+  return (
+    <ColorModeContext.Provider value={colorMode}>
+      <NextAppDirEmotionCacheProvider options={{ key: "mui" }}>
+        <ThemeProvider theme={mode === "light" ? lightTheme : darkTheme}>
+          <CssBaseline />
+          {children}
+        </ThemeProvider>
+      </NextAppDirEmotionCacheProvider>
+    </ColorModeContext.Provider>
   );
 }
