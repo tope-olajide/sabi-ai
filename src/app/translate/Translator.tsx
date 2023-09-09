@@ -12,6 +12,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import PublishIcon from "@mui/icons-material/Publish";
+import Card from "@mui/material/Card";
 
 const Translator = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -35,16 +36,19 @@ const Translator = () => {
     }
     try {
       setIsTranslating(true);
-      const response = await fetch("https://sability-ai.onrender.com/translate-text", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          textData: editorRef.current!.innerText,
-          language,
-        }),
-      });
+      const response = await fetch(
+        "https://sability-ai.onrender.com/translate-text",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            textData: editorRef.current!.innerText,
+            language,
+          }),
+        }
+      );
       const result = await response.json();
       console.log(result.queryResult.response);
       setIsTranslating(false);
@@ -129,10 +133,19 @@ const Translator = () => {
       alert("Please select a PDF file.");
     }
   };
+  const focusEditor = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  };
+
+  useEffect(() => {
+    focusEditor();
+  }, []);
   return (
     <>
       <SideBar pageTitle="Translator">
-        <section className="input-output-container">
+        <Card className="input-output-container">
           <div className="translate-header-section">
             <FormControl sx={{ minWidth: "140px" }} disabled size="small">
               <InputLabel>Auto Detect</InputLabel>
@@ -180,7 +193,7 @@ const Translator = () => {
             </FormControl>
           </div>
           <section className="input-output-section">
-            <section className="input-container">
+            <section className="input-container" onClick={focusEditor}>
               <div
                 contentEditable
                 className="editable"
@@ -246,7 +259,7 @@ const Translator = () => {
               </div>
             </section>
           </section>
-        </section>
+        </Card>
       </SideBar>
     </>
   );

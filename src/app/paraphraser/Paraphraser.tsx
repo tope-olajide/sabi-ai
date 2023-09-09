@@ -6,8 +6,8 @@ import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
-import { ChangeEvent, useRef, useState } from "react";
-import { Box } from "@mui/material";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Box, Card } from "@mui/material";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import PublishIcon from "@mui/icons-material/Publish";
 import MobileNav from "@/components/MobileNav";
@@ -130,12 +130,19 @@ const Paraphraser = () => {
     selection!.addRange(range);
     setIsEditorEmpty(false);
   };
+  const focusEditor = () => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  };
+
+  useEffect(() => {
+    focusEditor();
+  }, []);
   return (
     <>
       <SideBar pageTitle={"Paraphraser"}>
-      
-        <section className="input-output-container">
-          
+        <Card className="input-output-container">
           <div className="modes-section">
             <FormControl
               sx={{
@@ -182,7 +189,7 @@ const Paraphraser = () => {
                   control={<Radio />}
                   label="Academic"
                 />
-                 <FormControlLabel
+                <FormControlLabel
                   value="Creative"
                   control={<Radio />}
                   label="Creative"
@@ -196,12 +203,12 @@ const Paraphraser = () => {
                   value="Shorten"
                   control={<Radio />}
                   label="Shorten"
-                /> 
+                />
               </RadioGroup>
             </FormControl>
           </div>
           <section className="input-output-section">
-            <section className="input-container">
+            <section className="input-container" onClick={focusEditor}>
               <div
                 ref={editorRef}
                 contentEditable
@@ -212,10 +219,15 @@ const Paraphraser = () => {
 
               <div className="sub_div">
                 {isEditorEmpty ? (
-                  <Box sx={{ display:'flex', justifyContent:'space-between', width:'100%'}}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                    }}
+                  >
                     <Button
                       sx={{
-                        
                         fontWeight: "bold",
                         textTransform: "none",
                         borderRadius: 5,
@@ -248,27 +260,34 @@ const Paraphraser = () => {
                       Upload PDF
                     </Button>
                   </Box>
-                ) : <Box  sx={{ display:'flex', justifyContent:'space-between', width:'100%', alignItems:'center'}}>
-                  <p>Words:{inputWordCount}</p>
-                    
-                    <Button
-                  sx={{ textTransform: "Capitalize" }}
-                  variant="contained"
-                  onClick={paraphraseText}
-                  disabled={isParaphrasing}
-                >
-                  Paraphrase
-                </Button>
-                </Box>}
+                ) : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      width: "100%",
+                      alignItems: "center",
+                    }}
+                  >
+                    <p>Words:{inputWordCount}</p>
 
-                
+                    <Button
+                      sx={{ textTransform: "Capitalize" }}
+                      variant="contained"
+                      onClick={paraphraseText}
+                      disabled={isParaphrasing}
+                    >
+                      Paraphrase
+                    </Button>
+                  </Box>
+                )}
               </div>
             </section>
             <section className="output-container">
               <div className="output" ref={outputRef}></div>
             </section>
           </section>
-        </section>
+        </Card>
       </SideBar>
     </>
   );

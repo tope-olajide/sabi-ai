@@ -52,7 +52,7 @@ const Editor = () => {
   }
 
   const checkForErrors = async () => {
-         try {
+    try {
       setIsCheckingGrammar(true);
       const response = await fetch(
         "https://sability-ai.onrender.com/grammar-check",
@@ -69,17 +69,14 @@ const Editor = () => {
       setIsCheckingGrammar(false);
       if (!isTyping) {
         const newHTMLData = result.queryResult.response;
-      let outputString = newHTMLData.replace(/"""+/g, "");
-      editorRef.current!.innerHTML = "";
+        let outputString = newHTMLData.replace(/"""+/g, "");
+        editorRef.current!.innerHTML = "";
         editorRef.current!.innerHTML = excemptWord(outputString, exceptionList);
-        
       }
-
-
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
-    } 
+    }
   };
   const setExcemption = () => {
     const exceptionListCopy = [...exceptionList, selectedWord!.word];
@@ -106,7 +103,6 @@ const Editor = () => {
   };
 
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
-
     if (editorRef.current?.innerHTML) {
       setIsEditorEmpty(false);
     } else {
@@ -137,26 +133,12 @@ const Editor = () => {
     }
   };
 
-/* 
-  useEffect(() => {
-    let debounceTimer: NodeJS.Timeout;
-    if (!isTyping) {
-      debounceTimer = setTimeout(async () => {
-        await checkForErrors()
-      }, 2000); 
-    }
-    return () => {
-      clearTimeout(debounceTimer);
-    };
-  }, [content, isTyping]); */
-
   useEffect(() => {
     focusEditor();
   }, []);
 
   useEffect(() => {
-
-    const result = excemptWord(editorRef.current!.innerHTML, exceptionList)
+    const result = excemptWord(editorRef.current!.innerHTML, exceptionList);
     editorRef.current!.innerHTML = "";
     editorRef.current!.innerHTML = result;
   }, [exceptionList]);
@@ -234,7 +216,7 @@ const Editor = () => {
   };
   return (
     <>
-      <div className="editor-section" onClick={focusEditor}>
+      <Card className="editor-section" onClick={focusEditor}>
         <section>
           <div
             contentEditable
@@ -292,15 +274,16 @@ const Editor = () => {
         </section>
 
         {isEditorEmpty ? null : (
-          <Card className="editor-options">
+          <Card className="editor-options" color="secondary">
             {isCheckingGrammar ? (
               <CircularProgress size={30} />
             ) : (
               <Button
                 variant="contained"
-                sx={{ textTransform: "none" }}
+                sx={{ textTransform: "none", borderRadius: 5 }}
                 onClick={checkForErrors}
                 size="small"
+                color="primary"
               >
                 Check for Errors
               </Button>
@@ -314,7 +297,7 @@ const Editor = () => {
           <FileDownloadIcon /> <ContentCopyIcon />{" "} */}
           </Card>
         )}
-      </div>
+      </Card>
 
       <Popover
         id={id}

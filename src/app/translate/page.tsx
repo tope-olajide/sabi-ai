@@ -1,10 +1,22 @@
-import Translator from "./Translator"
+import Footer from "@/components/Footer";
+import Translator from "./Translator";
+import Box from "@mui/material/Box";
 
 const TranslatorPage = () => {
-    return (
-        <>
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          justifyContent: "space-between",
+        }}
+      >
         <Translator />
-        </>
-    )
-}
-export default TranslatorPage
+        <Footer />
+      </Box>
+    </>
+  );
+};
+export default TranslatorPage;

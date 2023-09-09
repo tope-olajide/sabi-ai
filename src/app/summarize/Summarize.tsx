@@ -10,6 +10,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import { useState, ChangeEvent, useRef } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
+import Card from "@mui/material/Card";
 /* function valuetext(value: number) {
   
   return 'value.toString()';
@@ -134,25 +135,7 @@ const Summarize = () => {
     <>
       <SideBar pageTitle="Summarizer">
         <section className="input-output-container">
-          {/* <div className="summarize-mode">
-            <h4>Summary Length:</h4>{" "}
-            <div className="slider-section">
-              <h5>Short</h5>
-              <Slider
-                sx={{ width: "200px" }}
-                aria-label="Temperature"
-                defaultValue={30}
-                getAriaValueText={valuetext}
-                valueLabelDisplay="auto"
-                step={10}
-                marks
-                min={10}
-                max={50}
-              />
-              <h5>Long</h5>
-            </div>
-          </div> */}
-          <div className="summarize-length-section">
+          <Card sx={{ borderRadius: 0 }} className="summarize-length-section">
             <FormControl
               sx={{
                 display: "flex",
@@ -200,8 +183,8 @@ const Summarize = () => {
                 />
               </RadioGroup>
             </FormControl>
-          </div>
-          <section className="input-output-section">
+          </Card>
+          <Card sx={{ borderRadius: 0 }} className="input-output-section">
             <section className="input-container">
               <div
                 contentEditable
@@ -267,7 +250,7 @@ const Summarize = () => {
                 <p>0 Words</p>
               </div> */}
             </section>
-          </section>
+          </Card>
         </section>
       </SideBar>
     </>

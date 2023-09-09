@@ -11,6 +11,7 @@ import { useState, ChangeEvent, useRef, useEffect } from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
+import Card from "@mui/material/Card";
 
 const ContentGenerator = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -76,7 +77,7 @@ const ContentGenerator = () => {
   return (
     <>
       <SideBar pageTitle="Content Generator">
-        <section className="input-output-container">
+        <Card className="input-output-container">
           <div className="translate-header-section">
             <h3>Input</h3>
             <h3>Output</h3>
@@ -99,27 +100,29 @@ const ContentGenerator = () => {
                 ) : null}
               </div>
 
-              <div className="sub_div generate_sub_div">
-                <Button
-                  sx={{ textTransform: "Capitalize" }}
-                  variant="contained"
-                  onClick={generateContent}
-                  disabled={isGenerating}
-                >
-                 {isGenerating? 'Generating...':'Generate Content'}
-                </Button>
-              </div>
+              {isEditorEmpty ? null : (
+                <div className="sub_div generate_sub_div">
+                  <Button
+                    sx={{ textTransform: "Capitalize" }}
+                    variant="contained"
+                    onClick={generateContent}
+                    disabled={isGenerating}
+                  >
+                    {isGenerating ? "Generating..." : "Generate Content"}
+                  </Button>
+                </div>
+              )}
             </section>
             <section className="output-container">
               <div className="output" ref={outputRef}></div>
               <div className="sub_div">
-               {/*  <p>0 Sentences </p>
+                {/*  <p>0 Sentences </p>
 
                 <p>0 Words</p> */}
               </div>
             </section>
           </section>
-        </section>
+        </Card>
       </SideBar>
     </>
   );

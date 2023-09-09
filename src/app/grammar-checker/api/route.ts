@@ -20,7 +20,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     const dataBuffer = fs.readFileSync("./public/file.pdf");
     const pdfExtract = new PDFExtract();
     const options: PDFExtractOptions = {};
-    
+
     const data = await pdfExtract.extract("./public/file.pdf", options);
     const allStrData = [];
     for (const page of data.pages) {
@@ -29,14 +29,14 @@ export async function POST(req: Request, res: NextApiResponse) {
           allStrData.push(content.str);
         }
       }
-    } 
+    }
     const joinedStrData = allStrData.join(" ");
     console.log(joinedStrData);
-        return NextResponse.json({
-          success: true,
-          message: "Data Extracted Successfully",
-          data: joinedStrData
-        });
+    return NextResponse.json({
+      success: true,
+      message: "Data Extracted Successfully",
+      data: joinedStrData,
+    });
   } catch (error: any) {
     console.log(error);
     return NextResponse.json({

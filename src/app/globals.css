@@ -6,13 +6,12 @@
 html,
 body {
   max-width: 100vw;
-
 }
 
 .input-output-container {
   width: 80%;
   height: 440px;
-  margin: 20px auto;
+  margin: 40px auto;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
     rgba(255, 255, 255, 0.05) 0px 0px 0px 1px inset;
@@ -106,21 +105,21 @@ body {
   font-style: italic;
   font-weight: 600;
   opacity: 0.3;
-  cursor:default;
+  cursor: default;
   font-size: 18px;
   margin: 0;
 }
 
 @media only screen and (max-width: 720px) {
-  .mobile-nav-container{
+  .mobile-nav-container {
     display: flex;
-    width: 97.5vw;
-  
-  margin: 0 auto;
+    width: 99.9vw;
+    margin: 0 auto;
   }
   .input-output-container {
-    width: 95vw;
+    width: 99.99vw;
     height: 100vh;
+    margin: 0;
   }
   .input-output-section {
     flex-direction: column;
@@ -133,12 +132,17 @@ body {
   .input-container {
     border-bottom: 1px solid rgba(0, 0, 0, 0.274);
   }
+  .input-container,
+  .output-container {
+    height: 50vh;
+    padding: 20px;
+  }
 }
 
 @media only screen and (max-width: 280px) {
   .input-output-container {
-    width: 64vw;
-    height: 95vh;
+    width: 99.9vw;
+    height: 99vh;
     margin-top: 0px;
   }
   .input-output-section {

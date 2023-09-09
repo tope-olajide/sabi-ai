@@ -1,7 +1,5 @@
-
 "use client";
 
-import * as React from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -26,16 +24,21 @@ import ShortTextIcon from "@mui/icons-material/ShortText";
 import AccountIcon from "@mui/icons-material/AccountCircle";
 import Link from "@mui/material/Link";
 import MobileNav from "./MobileNav";
-import EngineeringOutlinedIcon from '@mui/icons-material/EngineeringOutlined';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { useContext } from "react";
+import EngineeringOutlinedIcon from "@mui/icons-material/EngineeringOutlined";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
+import InfoIcon from "@mui/icons-material/Info";
+import TipsAndUpdatesIcon from "@mui/icons-material/TipsAndUpdates";
+import { Ref, forwardRef, useContext, useState } from "react";
 import { ColorModeContext } from "./ThemeRegistry/ThemeRegistry";
-
-
-
-
-
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
@@ -107,91 +110,209 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideBar({ children, pageTitle }:any) {
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: Ref<unknown>
+) {
+  return <Slide direction="right" ref={ref} {...props} />;
+});
+
+export default function SideBar({ children, pageTitle }: any) {
+  const [openAboutDialog, setOpenAboutDialog] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpenAboutDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenAboutDialog(false);
+  };
   const theme = useTheme();
   const colorMode = useContext(ColorModeContext);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
   const toggleSideBar = () => {
     setOpen(!open);
   };
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar position="fixed">
-        <Toolbar>
-          
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              width: "100%",
-            }}
-          >
-            <Box sx={{display:'flex', alignItems:'center'}}>
-              <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleSideBar}
-            edge="start"
-            sx={{
-              marginRight: 3,
-              display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } 
-            }}
-          >
-            {open ? <CloseIcon /> : <MenuIcon />}
-              </IconButton>
-              <Box sx={{display:'flex', alignItems:'center'}}><EngineeringOutlinedIcon />
-<Typography variant="h6" component="div">
-           Sability AI
-              </Typography>
+    <>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar position="fixed" color={"primary"} elevation={1}>
+          <Toolbar>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={toggleSideBar}
+                  edge="start"
+                  sx={{
+                    marginRight: 3,
+                    display: {
+                      xs: "none",
+                      sm: "none",
+                      md: "block",
+                      lg: "block",
+                      xl: "block",
+                      xxl: "block",
+                    },
+                  }}
+                >
+                  {open ? <CloseIcon /> : <MenuIcon />}
+                </IconButton>
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <EngineeringOutlinedIcon />
+                  <Typography variant="h6" component="div">
+                    Sability AI
+                  </Typography>
+                </Box>
               </Box>
-          
-              
-            </Box>
-            
 
-            <Typography noWrap component="p" sx={{ fontWeight: 600,display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } }}>
-              {pageTitle}
-            </Typography>
-
-            <Box>
-            {theme.palette.mode} mode
-      <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
-        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-      </IconButton>
-            </Box>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      
-      <Drawer variant="permanent" open={open} sx={{
-         display: { xs: 'none', sm: 'none', md:'block', lg:'block',xl:'block', xxl:'block' } 
-      }}>
-        <DrawerHeader></DrawerHeader>
-        <Divider />
-        <List>
-          {[
-            "Grammar Checker",
-            "Paraphraser",
-            "Summarizer",
-            "Translator",
-            "Content Generator",
-          ].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <Link
-                underline="none"
-                href={index == 0 ? "/" : index == 1 ? "/paraphraser": index == 2 ? "/summarize": index == 3 ? "/translate" : "/generate-content"}
+              <Typography
+                noWrap
+                component="p"
+                sx={{
+                  fontWeight: 600,
+                  display: {
+                    xs: "none",
+                    sm: "none",
+                    md: "block",
+                    lg: "block",
+                    xl: "block",
+                    xxl: "block",
+                  },
+                }}
               >
+                {pageTitle}
+              </Typography>
+              <Typography
+                noWrap
+                onClick={handleOpenDialog}
+                sx={{
+                  fontWeight: 600,
+                  display: {
+                    xs: "block",
+                    sm: "block",
+                    md: "none",
+                    lg: "none",
+                    xl: "none",
+                    xxl: "none",
+                  },
+                  cursor:'pointer'
+                }}
+              >
+                 {<TipsAndUpdatesIcon />}
+              </Typography>
+
+              <Box>
+                {/* {theme.palette.mode} mode */}
+                <IconButton
+                  sx={{ ml: 1 }}
+                  onClick={colorMode.toggleColorMode}
+                  color="inherit"
+                >
+                  {theme.palette.mode === "dark" ? (
+                    <Brightness7Icon color="primary" />
+                  ) : (
+                    <Brightness4Icon />
+                  )}
+                </IconButton>
+              </Box>
+            </Box>
+          </Toolbar>
+        </AppBar>
+
+        <Drawer
+          variant="permanent"
+          open={open}
+          sx={{
+            display: {
+              xs: "none",
+              sm: "none",
+              md: "block",
+              lg: "block",
+              xl: "block",
+              xxl: "block",
+            },
+          }}
+        >
+          <DrawerHeader></DrawerHeader>
+          <Divider />
+          <List>
+            {[
+              "Grammar Checker",
+              "Paraphraser",
+              "Summarizer",
+              "Translator",
+              "Content Generator",
+            ].map((text, index) => (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
+                <Link
+                  underline="none"
+                  href={
+                    index == 0
+                      ? "/"
+                      : index == 1
+                      ? "/paraphraser"
+                      : index == 2
+                      ? "/summarize"
+                      : index == 3
+                      ? "/translate"
+                      : "/generate-content"
+                  }
+                >
+                  <ListItemButton
+                    sx={{
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
+                    }}
+                  >
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {index == 0 ? (
+                        <SpellcheckIcon />
+                      ) : index == 1 ? (
+                        <HistoryEduIcon />
+                      ) : index == 2 ? (
+                        <ShortTextIcon />
+                      ) : index == 3 ? (
+                        <Translate />
+                      ) : (
+                        <EditNoteIcon />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={text}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </Link>
+              </ListItem>
+            ))}
+          </List>
+          <Divider />
+          <List sx={{ mt: 25 }}>
+            <Divider />
+            {["Info"].map((text, index) => (
+              <ListItem key={text} disablePadding sx={{ display: "block" }}>
                 <ListItemButton
+                  onClick={handleOpenDialog}
                   sx={{
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
@@ -205,62 +326,61 @@ export default function SideBar({ children, pageTitle }:any) {
                       justifyContent: "center",
                     }}
                   >
-                    {index == 0 ? (
-                      <SpellcheckIcon />
-                    ) : index == 1 ? (
-                      <HistoryEduIcon />
-                    ) : index == 2 ? (
-                      <ShortTextIcon />
-                    ) : index == 3 ? (
-                      <Translate />
-                    ) : (
-                      <EditNoteIcon />
-                    )}
+                    {<TipsAndUpdatesIcon />}
                   </ListItemIcon>
                   <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
                 </ListItemButton>
-              </Link>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <List sx={{ mt: 25 }}>
-          <Divider />
-          {["Account"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: "block" }}>
-              <ListItemButton
+              </ListItem>
+            ))}
+          </List>
+        </Drawer>
+
+        <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
+          <Toolbar />
+          <section className="mobile-nav-container">
+            <MobileNav pageTitle={pageTitle} />
+          </section>
+
+          {children}
+          <Dialog
+            open={openAboutDialog}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={handleCloseDialog}
+            aria-describedby="alert-dialog-slide-description"
+          >
+            <DialogTitle>
+              <Box
                 sx={{
-                  minHeight: 48,
-                  justifyContent: open ? "initial" : "center",
-                  px: 2.5,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : "auto",
-                    justifyContent: "center",
-                  }}
-                >
-                  {<AccountIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </Drawer>
-      
-      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
-        <Toolbar />
-        <section  className="mobile-nav-container">
-          <MobileNav pageTitle={pageTitle} />
-       </section>
-          
-    
-        
-        {children}
+                {"About Sability AI"}
+              </Box>
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-slide-description">
+                Sability, originating from Nigerian Pidgin English&apos;s term
+                &apos;Sabi&apos;, which conveys the concept of skill and capability, is an
+                open-source grammar-checking tool developed using {" "}
+                <Link href="https://mindsdb.com/">MindsDB</Link>. This versatile
+                tool offers multiple features. <br /> <br /> It can be employed
+                for summarizing text documents in various styles, and facilitate
+                translations from your preferred language to like 20 other
+                languages.
+                <br /> <br />
+                Using Sability is straightforward: you can simply type, copy and
+                paste, or upload your PDF documents.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleCloseDialog}>Close</Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
