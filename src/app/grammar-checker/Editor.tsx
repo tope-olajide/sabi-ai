@@ -35,6 +35,8 @@ const Editor = () => {
   const [selectedWord, setSelectedWord] = useState<SelectedWord>();
   const [anchorEl, setAnchorEl] = useState<HTMLSpanElement | null>(null);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
+  const [isEditorModified, setIsEditorModified] = useState(false);
+  const [contents, setContents] = useState("");
 
   function excemptWord(htmlString: string, exceptionList: string | string[]) {
     const parser = new DOMParser();
@@ -52,7 +54,11 @@ const Editor = () => {
   }
 
   const checkForErrors = async () => {
+    if (!wordCount) {
+      return;
+    }
     try {
+     // setIsEditorModified(false)
       setIsCheckingGrammar(true);
       const response = await fetch(
         "https://sability-ai.onrender.com/grammar-check",
@@ -65,14 +71,12 @@ const Editor = () => {
         }
       );
       const result = await response.json();
-      console.log(result.queryResult.response);
       setIsCheckingGrammar(false);
-      if (!isTyping) {
-        const newHTMLData = result.queryResult.response;
-        let outputString = newHTMLData.replace(/"""+/g, "");
-        editorRef.current!.innerHTML = "";
-        editorRef.current!.innerHTML = excemptWord(outputString, exceptionList);
-      }
+      console.log(result.queryResult.response);
+      const newHTMLData = result.queryResult.response;
+      let outputString = newHTMLData.replace(/"+/g, '');
+      editorRef.current!.innerHTML = "";
+      editorRef.current!.innerHTML = excemptWord(outputString, exceptionList);
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
@@ -103,12 +107,13 @@ const Editor = () => {
   };
 
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
-    if (editorRef.current?.innerHTML) {
+    if (editorRef.current?.innerText) {
       setIsEditorEmpty(false);
     } else {
       setIsEditorEmpty(true);
     }
     setWordCount(countWords(editorRef.current!.innerText));
+    setContents(editorRef.current?.innerText || "");
   };
 
   const handlePaste = (e: any) => {
@@ -214,6 +219,27 @@ const Editor = () => {
       console.error("Unable to read clipboard data: ", error);
     }
   };
+
+/*   useEffect(() => {
+    let timer: NodeJS.Timeout;
+    setIsTyping(true);
+    setIsEditorModified(true)
+    console.log("user is typing...");
+    timer = setTimeout(async () => {
+      console.log("user has stopped typing...");
+      setIsTyping(false);
+    }, 2000);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [contents]); */
+
+/*   useEffect(() => {
+    if (!isTyping && !isCheckingGrammar) {
+      checkForErrors();
+    }
+  }, [isTyping]); */
+
   return (
     <>
       <Card className="editor-section" onClick={focusEditor}>
