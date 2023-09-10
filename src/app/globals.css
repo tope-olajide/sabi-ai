@@ -1,3 +1,8 @@
+@font-face {
+  font-family:"Pacifico-Regular";
+  src: url("../../public/fonts/Pacifico-Regular.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -6,6 +11,12 @@
 html,
 body {
   max-width: 100vw;
+}
+
+.logo{
+    font-family: 'Pacifico-Regular', sans-serif;
+    font-size: 18px;
+    font-weight: 100;
 }
 
 .input-output-container {

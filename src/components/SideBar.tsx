@@ -170,11 +170,12 @@ export default function SideBar({ children, pageTitle }: any) {
                 >
                   {open ? <CloseIcon /> : <MenuIcon />}
                 </IconButton>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <EngineeringOutlinedIcon />
-                  <Typography variant="h6" component="div">
-                    Sability AI
-                  </Typography>
+                <Box sx={{ display: "flex", alignItems: "center" }}
+                color= {theme.palette.mode === "dark" ? "primary" : ""}>
+                 {/*  <EngineeringOutlinedIcon /> */}
+                  
+                   <h3 className="logo" style={{}}>Sability AI</h3> 
+                  
                 </Box>
               </Box>
 
@@ -198,6 +199,7 @@ export default function SideBar({ children, pageTitle }: any) {
               <Typography
                 noWrap
                 onClick={handleOpenDialog}
+                color={theme.palette.mode === "dark" ?"primary":""}
                 sx={{
                   fontWeight: 600,
                   display: {
