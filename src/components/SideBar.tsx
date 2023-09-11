@@ -170,12 +170,15 @@ export default function SideBar({ children, pageTitle }: any) {
                 >
                   {open ? <CloseIcon /> : <MenuIcon />}
                 </IconButton>
-                <Box sx={{ display: "flex", alignItems: "center" }}
-                color= {theme.palette.mode === "dark" ? "primary" : ""}>
-                 {/*  <EngineeringOutlinedIcon /> */}
-                  
-                   <h3 className="logo" style={{}}>Sability AI</h3> 
-                  
+                <Box
+                  sx={{ display: "flex", alignItems: "center" }}
+                  color={theme.palette.mode === "dark" ? "primary" : ""}
+                >
+                  {/*  <EngineeringOutlinedIcon /> */}
+
+                  <h3 className="logo" style={{}}>
+                    Sability AI
+                  </h3>
                 </Box>
               </Box>
 
@@ -199,7 +202,7 @@ export default function SideBar({ children, pageTitle }: any) {
               <Typography
                 noWrap
                 onClick={handleOpenDialog}
-                color={theme.palette.mode === "dark" ?"primary":""}
+                color={theme.palette.mode === "dark" ? "primary" : ""}
                 sx={{
                   fontWeight: 600,
                   display: {
@@ -210,10 +213,10 @@ export default function SideBar({ children, pageTitle }: any) {
                     xl: "none",
                     xxl: "none",
                   },
-                  cursor:'pointer'
+                  cursor: "pointer",
                 }}
               >
-                 {<TipsAndUpdatesIcon />}
+                {<TipsAndUpdatesIcon />}
               </Typography>
 
               <Box>
@@ -364,14 +367,15 @@ export default function SideBar({ children, pageTitle }: any) {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                Sability, originating from Nigerian Pidgin English&apos;s term
-                &apos;Sabi&apos;, which conveys the concept of skill and capability, is an
-                open-source grammar-checking tool developed using {" "}
-                <Link href="https://mindsdb.com/">MindsDB</Link>. This versatile
-                tool offers multiple features. <br /> <br /> It can be employed
-                for summarizing text documents in various styles, and facilitate
-                translations from your preferred language to like 20 other
-                languages.
+                Sability, derived from the Nigerian Pidgin word
+                &apos;Sabi&apos;, which means &apos;to know&apos; or &apos;to
+                understand, &apos; is an open-source grammar-checking tool
+                developed using <Link href="https://mindsdb.com/">MindsDB</Link>
+                . This versatile tool offers multiple features. <br /> <br /> It
+                can be used for summarizing text documents in various styles,
+                and facilitate translations from your preferred language to like
+                20 other languages. You can also you it to automatically
+                generate content such as articles.
                 <br /> <br />
                 Using Sability is straightforward: you can simply type, copy and
                 paste, or upload your PDF documents.

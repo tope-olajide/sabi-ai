@@ -23,6 +23,7 @@
   border: 0;
   max-height: 310px;
   overflow: auto;
+  quotes: none;
 }
 .placeholder-text {
   font-style: italic;

@@ -86,8 +86,9 @@ const Editor = () => {
         editorRef.current!.innerHTML = newHTMLData;
       }
       editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = newText;
-      console.log(excemptWord(newText, exceptionList));
+      editorRef.current!.innerHTML = excemptWord(newText, exceptionList);
+     // console.log(excemptWord(newText, exceptionList));
+
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
@@ -250,6 +251,8 @@ const Editor = () => {
       checkForErrors();
     }
   }, [isTyping]); */
+ // Save the cursor 
+
 
   return (
     <>
