@@ -58,10 +58,11 @@ const Editor = () => {
       return;
     }
     try {
-     // setIsEditorModified(false)
+      // setIsEditorModified(false)
       setIsCheckingGrammar(true);
       const response = await fetch(
-        "https://sability-ai.onrender.com/grammar-check",
+        // "https://sability-ai.onrender.com/grammar-check",
+        "http://localhost:5000/grammar-check",
         {
           method: "POST",
           headers: {
@@ -72,11 +73,22 @@ const Editor = () => {
       );
       const result = await response.json();
       setIsCheckingGrammar(false);
-      console.log(result.queryResult.response);
-      const newHTMLData = result.queryResult.response;
-      let outputString = newHTMLData.replace(/"+/g, '');
+
+      const apiResult = result.queryResult.response;
+      // Removes triple double quotes found at the start and end of the API response.
+      const regex = /^\"\"\"|\"\"\"$/g;
+      const newText = apiResult.replace(regex, "");
+
+      // Removes double quotes found at the start and end of the API response.
+      if (newText.startsWith('"') && newText.endsWith('"')) {
+        const newHTMLData = newText.substring(1, newText.length - 1);
+        console.log(newHTMLData);
+        editorRef.current!.innerHTML = "";
+        editorRef.current!.innerHTML = newHTMLData;
+      }
       editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = excemptWord(outputString, exceptionList);
+      editorRef.current!.innerHTML = newText;
+      console.log(excemptWord(newText, exceptionList));
     } catch (error) {
       setIsCheckingGrammar(false);
       console.log(error);
@@ -220,7 +232,7 @@ const Editor = () => {
     }
   };
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     let timer: NodeJS.Timeout;
     setIsTyping(true);
     setIsEditorModified(true)
@@ -234,7 +246,7 @@ const Editor = () => {
     };
   }, [contents]); */
 
-/*   useEffect(() => {
+  /*   useEffect(() => {
     if (!isTyping && !isCheckingGrammar) {
       checkForErrors();
     }
