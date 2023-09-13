@@ -367,15 +367,16 @@ export default function SideBar({ children, pageTitle }: any) {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                Sability, derived from the Nigerian Pidgin word
+                Sability, originating from the Nigerian Pidgin term
                 &apos;Sabi&apos;, which means &apos;to know&apos; or &apos;to
                 understand, &apos; is an open-source grammar-checking tool
-                developed using <Link href="https://mindsdb.com/">MindsDB</Link>
+                created with <Link href="https://mindsdb.com/">MindsDB</Link>
                 . This versatile tool offers multiple features. <br /> <br /> It
-                can be used for summarizing text documents in various styles,
-                and facilitate translations from your preferred language to like
-                20 other languages. You can also you it to automatically
-                generate content such as articles.
+                can be employed to summarize text documents in various formats
+                and assist in translating from your chosen language into
+                approximately 20 other languages. Furthermore, it helps in the
+                automatic generation of various types of content, including
+                articles.
                 <br /> <br />
                 Using Sability is straightforward: you can simply type, copy and
                 paste, or upload your PDF documents.
