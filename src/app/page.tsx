@@ -1,9 +1,10 @@
-import GrammerChecker from "./grammar-checker/GrammarChecker";
+import GrammerCheckerPage from "./grammar-checker/page";
+
 
 export default function Home() {
   return (
     <>
-      <GrammerChecker />
+      <GrammerCheckerPage />
     </>
   );
 }

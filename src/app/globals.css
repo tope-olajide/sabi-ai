@@ -21,7 +21,7 @@ body {
 
 .input-output-container {
   width: 80%;
-  height: 440px;
+  min-height: 440px;
   margin: 40px auto;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 12px 28px 0px,
     rgba(0, 0, 0, 0.1) 0px 2px 4px 0px,
@@ -47,7 +47,12 @@ body {
 }
 
 .translate-header-section {
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
+}
+.translate-header-section h3{
+  margin: 0;
+  font-size: 16px;
 }
 
 .input-container,
@@ -73,6 +78,7 @@ body {
 .editable {
   overflow-y: auto;
   outline: none;
+  height: 100%;
 }
 .sub_div {
   width: 100%;
@@ -82,7 +88,9 @@ body {
   margin-top: 10px;
 }
 .generate_sub_div {
-  justify-content: center;
+  justify-content: space-between;
+  display: flex;
+
 }
 .output-container {
   border-left: 1px solid rgba(0, 0, 0, 0.5);
@@ -171,4 +179,7 @@ body {
   .sub_div {
     height: 40px;
   }
+}
+#alert-dialog-slide-description b {
+  font-weight: 600;
 }

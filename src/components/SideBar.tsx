@@ -177,7 +177,7 @@ export default function SideBar({ children, pageTitle }: any) {
                   {/*  <EngineeringOutlinedIcon /> */}
 
                   <h3 className="logo" style={{}}>
-                    Sability AI
+                    Sabi AI
                   </h3>
                 </Box>
               </Box>
@@ -362,24 +362,12 @@ export default function SideBar({ children, pageTitle }: any) {
                   alignItems: "center",
                 }}
               >
-                {"About Sability AI"}
+                {"About Sabi AI"}
               </Box>
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-                Sability, originating from the Nigerian Pidgin term
-                &apos;Sabi&apos;, which means &apos;to know&apos; or &apos;to
-                understand, &apos; is an open-source grammar-checking tool
-                created with <Link href="https://mindsdb.com/">MindsDB</Link>
-                . This versatile tool offers multiple features. <br /> <br /> It
-                can be employed to summarize text documents in various formats
-                and assist in translating from your chosen language into
-                approximately 20 other languages. Furthermore, it helps in the
-                automatic generation of various types of content, including
-                articles.
-                <br /> <br />
-                Using Sability is straightforward: you can simply type, copy and
-                paste, or upload your PDF documents.
+              <p>The word “<strong>Sabi</strong>”, originating from Nigerian Pidgin English, means <em>“to know”</em> or <em>“to understand”</em>. It is an open-source grammar-checking tool powered by the <b>OpenAI ChatGPT API</b>. This versatile tool offers a multitude of features:</p> <ul> <li><strong>Summarization</strong>: <em>Sabi</em> can condense text documents into various formats, making information more accessible.</li> <li><strong>Language Translation</strong>: Seamlessly bridge language barriers by inputting your text in your preferred language, and <em>Sabi</em> will provide accurate translations into approximately <strong>20 other languages</strong>.</li> <li><strong>Content Generation</strong>: <em>Sabi</em> automatically generates diverse content types, including engaging articles.</li> <li><strong>Paraphrasing</strong>: Spice up your content! <em>Sabi</em> excels at rephrasing sentences and paragraphs, making your writing more diverse and engaging.</li> </ul> <p>Using <strong>Sabi AI</strong> is straightforward:</p> <ul> <li><strong>Type</strong>: Simply input your text directly into the tool.</li> <li><strong>Copy and Paste</strong>: Bring existing content into <em>Sabi</em> for analysis.</li> <li><strong>Upload PDFs</strong>: Need to check a document? Upload your PDF files, and let <em>Sabi</em> work its magic.</li> <p>Empower your writing with <strong>Sabi</strong>—the intuitive grammar-checking companion! 🚀</p></ul>
               </DialogContentText>
             </DialogContent>
             <DialogActions>
