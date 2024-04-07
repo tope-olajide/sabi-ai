@@ -1,109 +1,90 @@
 "use client";
+
+import { useState, useRef, useEffect, ChangeEvent } from "react";
 import SideBar from "@/components/SideBar";
 import Button from "@mui/material/Button";
-
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
-import { useState, ChangeEvent, useRef, useEffect } from "react";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import Card from "@mui/material/Card";
+import AlertDialog from "@/components/Dialog";
+import { countWords, handlePaste } from "../utils/CommonFunctions";
 
 const ContentGenerator = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const outputRef = useRef<HTMLDivElement | null>(null);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [inputWordCount, setInputWordCount] = useState(0);
+
+  useEffect(() => {
+    focusEditor();
+  }, []);
+
   const focusEditor = () => {
     if (editorRef.current) {
       editorRef.current.focus();
     }
   };
-  useEffect(() => {
-    focusEditor();
-  }, []);
+
   const generateContent = async () => {
-    const textData = editorRef.current!.innerText;
-    if (!textData.trim()) {
-      return;
-    }
     try {
+      const textData = editorRef.current!.innerText.trim();
+      if (!textData) {
+        throw new Error("No text data to generate content.");
+      }
+      if (inputWordCount > 100) {
+        setIsDialogOpen(true);
+        return;
+      }
       setIsGenerating(true);
-      const response = await fetch("http://localhost:5000/generate-content", {
+      const response = await fetch("https://sability-ai.onrender.com/generate-content", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          textData: editorRef.current!.innerText,
-        }),
+        body: JSON.stringify({ textData }),
       });
-      const result = await response.json();
-      console.log(result.queryResult.response);
-      setIsGenerating(false);
-      const paraphrasedText = result.queryResult.response;
-      outputRef.current!.innerHTML = "";
-      outputRef.current!.innerHTML = paraphrasedText;
+
+      if (!response.ok) {
+        throw new Error("Failed to generate content. Please try again later.");
+      }
+      const { queryResult } = await response.json();
+      outputRef.current!.innerHTML = queryResult;
     } catch (error) {
+      console.error("Error generating content:", error);
+    } finally {
       setIsGenerating(false);
-      console.log(error);
     }
   };
+
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
-    if (editorRef.current?.innerHTML) {
-      setIsEditorEmpty(false);
-    } else {
-      setIsEditorEmpty(true);
-    }
+    setIsEditorEmpty(!editorRef.current?.innerText);
+    setInputWordCount(countWords(editorRef.current!.innerText));
   };
-  const handlePaste = (e: any) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    const selection = window.getSelection();
-    const range = selection!.getRangeAt(0);
-    range.deleteContents();
-    const textNode = document.createTextNode(text);
-    range.insertNode(textNode);
-    range.setStartAfter(textNode);
-    range.collapse(true);
-    selection!.removeAllRanges();
-    selection!.addRange(range);
-    setIsEditorEmpty(false);
-  };
+
   return (
     <>
       <SideBar pageTitle="Content Generator">
-        <Card className="input-output-container">
-          <div className="translate-header-section">
-            <h3>Input</h3>
-            <h3>Output</h3>
-          </div>
+        <Card className="input-output-container" style={{ minHeight: "385px" }}>
           <section className="input-output-section">
             <section className="input-container" onClick={focusEditor}>
-              <div>
-                <div
-                  contentEditable
-                  className="editable"
-                  ref={editorRef}
-                  onInput={(e: any) => handleEditorChange(e)}
-                  onPaste={handlePaste}
-                ></div>
-                {isEditorEmpty ? (
-                  <h1 className="placeholder-text" onClick={focusEditor}>
-                    Describe the topic you want to write about and explain the
-                    format or structure you want the content to take.
-                  </h1>
-                ) : null}
+              <div className="translate-header-section">
+                <h3>Describe the topic you want to write about</h3>
               </div>
+              <div
+                contentEditable
+                className="editable"
+                ref={editorRef}
+                onInput={(e: any) => handleEditorChange(e)}
+                onPaste={(e: any) =>
+                  handlePaste(e, editorRef, setInputWordCount, setIsEditorEmpty)
+                }
+              />
 
               {isEditorEmpty ? null : (
                 <div className="sub_div generate_sub_div">
+                  <p>Words: {inputWordCount}</p>
                   <Button
-                    sx={{ textTransform: "Capitalize" }}
+                    sx={{ textTransform: "capitalize" }}
                     variant="contained"
                     onClick={generateContent}
                     disabled={isGenerating}
@@ -114,17 +95,23 @@ const ContentGenerator = () => {
               )}
             </section>
             <section className="output-container">
-              <div className="output" ref={outputRef}></div>
-              <div className="sub_div">
-                {/*  <p>0 Sentences </p>
-
-                <p>0 Words</p> */}
+              <div className="translate-header-section">
+                <h3>Output</h3>
               </div>
+              <div className="output" ref={outputRef}></div>
+              <div className="sub_div"></div>
             </section>
           </section>
         </Card>
       </SideBar>
+      <AlertDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        dialogTitle="Word Limit Exceeded"
+        dialogContent="Content generation is currently limited to 100 words."
+      />
     </>
   );
 };
+
 export default ContentGenerator;

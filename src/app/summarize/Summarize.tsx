@@ -1,7 +1,7 @@
 "use client";
 import SideBar from "@/components/SideBar";
 import Button from "@mui/material/Button";
-import Slider from "@mui/material/Slider";
+
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
@@ -11,10 +11,9 @@ import FormLabel from "@mui/material/FormLabel";
 import { useState, ChangeEvent, useRef } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
 import Card from "@mui/material/Card";
-/* function valuetext(value: number) {
-  
-  return 'value.toString()';
-} */
+import AlertDialog from "@/components/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
+import { countWords, handleFileChange, handlePaste, handlePasteClick } from "../utils/CommonFunctions";
 
 const Summarize = () => {
   const [value, setValue] = useState("Short");
@@ -27,56 +26,51 @@ const Summarize = () => {
   const [isSummarizing, setIsSummarizing] = useState(false);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
   const [inputWordCount, setInputWordCount] = useState(0);
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const summarizeText = async () => {
-    const textData = editorRef.current!.innerText;
-    if (!textData.trim()) {
-      return;
-    }
     try {
+      if (inputWordCount > 100) {
+        console.log(inputWordCount);
+        setIsDialogOpen(true);
+        return;
+      }
+      const textData = editorRef.current!.innerText;
+      if (!textData.trim()) {
+        return;
+      }
+  
       setIsSummarizing(true);
-      const response = await fetch(
-        "https://sability-ai.onrender.com/summarize-text",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            textData: editorRef.current!.innerText,
-            length: value,
-          }),
-        }
-      );
+  
+      const response = await fetch("http://localhost:5000/summarize-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          textData: editorRef.current!.innerText,
+          length: value,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to summarize text. Please try again later.");
+      }
+  
       const result = await response.json();
-      console.log(result.queryResult.response);
       setIsSummarizing(false);
-      const paraphrasedText = result.queryResult.response;
+      const summarizedText = result.queryResult;
       outputRef.current!.innerHTML = "";
-      outputRef.current!.innerHTML = paraphrasedText;
+      outputRef.current!.innerHTML = summarizedText;
+  
     } catch (error) {
       setIsSummarizing(false);
-      console.log(error);
+      console.error("Error summarizing text:", error);
     }
   };
-  const handlePaste = (e: any) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    const selection = window.getSelection();
-    const range = selection!.getRangeAt(0);
-    range.deleteContents();
-    const textNode = document.createTextNode(text);
-    range.insertNode(textNode);
-    range.setStartAfter(textNode);
-    range.collapse(true);
-    selection!.removeAllRanges();
-    selection!.addRange(range);
-    setIsEditorEmpty(false);
-  };
-  const countWords = (text: string) => {
-    const words = text.split(" ");
-    const filteredWords = words.filter((word) => word.trim() !== "");
-    return filteredWords.length;
-  };
+  
+
+
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
     if (editorRef.current?.innerHTML) {
       setIsEditorEmpty(false);
@@ -85,52 +79,7 @@ const Summarize = () => {
     }
     setInputWordCount(countWords(editorRef.current!.innerText));
   };
-  const handlePasteClick = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (editorRef.current) {
-        const div = editorRef.current;
-        const selection = window.getSelection();
-        if (selection) {
-          const range = selection.getRangeAt(0);
-          const textNode = document.createTextNode(text);
-          range.deleteContents();
-          range.insertNode(textNode);
-          selection.removeAllRanges();
-          selection.addRange(range);
-          div.focus();
-          setIsEditorEmpty(false);
-          setInputWordCount(countWords(editorRef.current!.innerText));
-        }
-      }
-    } catch (error) {
-      console.error("Unable to read clipboard data: ", error);
-    }
-  };
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type === "application/pdf") {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch("/grammar-checker/api", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-      if (result.success === false) {
-        console.log(result.message);
 
-        return alert(result.message);
-      }
-
-      editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = result.data;
-      setIsEditorEmpty(false);
-      setInputWordCount(countWords(editorRef.current!.innerText));
-    } else {
-      alert("Please select a PDF file.");
-    }
-  };
   return (
     <>
       <SideBar pageTitle="Summarizer">
@@ -190,7 +139,7 @@ const Summarize = () => {
                 contentEditable
                 className="editable"
                 ref={editorRef}
-                onPaste={handlePaste}
+                onPaste={(e:any)=>handlePaste(e, editorRef, setInputWordCount,setIsEditorEmpty )}
                 onInput={(e: any) => handleEditorChange(e)}
               ></div>
               <div className="sub_div">
@@ -198,18 +147,19 @@ const Summarize = () => {
                   <Button
                     sx={{ textTransform: "none" }}
                     variant="outlined"
-                    onClick={handlePasteClick}
+                    onClick={(e)=>handlePasteClick(editorRef, setIsEditorEmpty, setInputWordCount )}
                   >
                     Paste
                   </Button>
                 ) : null}
+                {isSummarizing ? <CircularProgress size={30} /> : ""}
+
                 {isEditorEmpty ? (
                   <div>
-                    {" "}
                     <input
                       type="file"
                       accept=".pdf"
-                      onChange={handleFileChange}
+                      onChange={(e)=>handleFileChange(e, editorRef, setInputWordCount, setIsEditorEmpty)}
                       style={{ display: "none" }}
                       ref={fileInputRef}
                     />
@@ -243,16 +193,17 @@ const Summarize = () => {
             </section>
             <section className="output-container">
               <div className="output" ref={outputRef}></div>
-              {/* <div className="sub_div">
-                
-                <p>0 Sentences </p>
-
-                <p>0 Words</p>
-              </div> */}
+             
             </section>
           </Card>
         </section>
       </SideBar>
+      <AlertDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        dialogTitle="Word Limit Exceeded"
+        dialogContent="Text Summarization is currently limited to 100 words."
+      />
     </>
   );
 };

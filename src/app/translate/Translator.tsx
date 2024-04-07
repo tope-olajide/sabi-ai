@@ -2,17 +2,20 @@
 import SideBar from "@/components/SideBar";
 import Button from "@mui/material/Button";
 
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormLabel from "@mui/material/FormLabel";
 import { useState, ChangeEvent, useRef, useEffect } from "react";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
 import PublishIcon from "@mui/icons-material/Publish";
 import Card from "@mui/material/Card";
+import AlertDialog from "@/components/Dialog";
+import TargetLangaugeOptions from "./TargetLangaugeOptions";
+import {
+  countWords,
+  handleFileChange,
+  handlePaste,
+  handlePasteClick,
+} from "../utils/CommonFunctions";
 
 const Translator = () => {
   const editorRef = useRef<HTMLDivElement | null>(null);
@@ -23,43 +26,64 @@ const Translator = () => {
   const handleChange = (event: SelectChangeEvent) => {
     setLanguage(event.target.value as string);
   };
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false);
   const [isEditorEmpty, setIsEditorEmpty] = useState(true);
+  const [dialogContent, setDialogContent] = useState({
+    title: "",
+    message: "",
+  });
   const translateText = async () => {
-    const textData = editorRef.current!.innerText;
-    if (!textData.trim()) {
-      return;
-    }
-    if (!language) {
-      return alert("Please select a target language!");
-    }
     try {
+      const textData = editorRef.current!.innerText;
+      if (!textData.trim()) {
+        return;
+      }
+      if (!language) {
+        setDialogContent({
+          title: "No Target Language",
+          message: "You must select a target language!",
+        });
+        setIsDialogOpen(true);
+        return;
+      }
+      if (inputWordCount > 100) {
+        setDialogContent({
+          title: "Word Limit Exceeded",
+          message: "Translator is currently limited to 100 words.",
+        });
+        setIsDialogOpen(true);
+        return;
+      }
+
       setIsTranslating(true);
-      const response = await fetch(
-        "https://sability-ai.onrender.com/translate-text",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            textData: editorRef.current!.innerText,
-            language,
-          }),
-        }
-      );
+
+      const response = await fetch("https://sability-ai.onrender.com/translate-text", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          textData: editorRef.current!.innerText,
+          language,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to translate text. Please try again later.");
+      }
+
       const result = await response.json();
-      console.log(result.queryResult.response);
       setIsTranslating(false);
-      const translated = result.queryResult.response;
+      const translated = result.queryResult;
       outputRef.current!.innerHTML = "";
       outputRef.current!.innerHTML = translated;
     } catch (error) {
       setIsTranslating(false);
-      console.log(error);
+      console.error("Error translating text:", error);
     }
   };
+
   const handleEditorChange = (event: ChangeEvent<HTMLDivElement>) => {
     if (editorRef.current?.innerHTML) {
       setIsEditorEmpty(false);
@@ -68,71 +92,7 @@ const Translator = () => {
     }
     setInputWordCount(countWords(editorRef.current!.innerText));
   };
-  const handlePaste = (e: any) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    const selection = window.getSelection();
-    const range = selection!.getRangeAt(0);
-    range.deleteContents();
-    const textNode = document.createTextNode(text);
-    range.insertNode(textNode);
-    range.setStartAfter(textNode);
-    range.collapse(true);
-    selection!.removeAllRanges();
-    selection!.addRange(range);
-    setIsEditorEmpty(false);
-  };
-  const countWords = (text: string) => {
-    const words = text.split(" ");
-    const filteredWords = words.filter((word) => word.trim() !== "");
-    return filteredWords.length;
-  };
-  const handlePasteClick = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-      if (editorRef.current) {
-        const div = editorRef.current;
-        const selection = window.getSelection();
-        if (selection) {
-          const range = selection.getRangeAt(0);
-          const textNode = document.createTextNode(text);
-          range.deleteContents();
-          range.insertNode(textNode);
-          selection.removeAllRanges();
-          selection.addRange(range);
-          div.focus();
-          setIsEditorEmpty(false);
-          setInputWordCount(countWords(editorRef.current!.innerText));
-        }
-      }
-    } catch (error) {
-      console.error("Unable to read clipboard data: ", error);
-    }
-  };
-  const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file && file.type === "application/pdf") {
-      const formData = new FormData();
-      formData.append("file", file);
-      const response = await fetch("/grammar-checker/api", {
-        method: "POST",
-        body: formData,
-      });
-      const result = await response.json();
-      if (result.success === false) {
-        console.log(result.message);
 
-        return alert(result.message);
-      }
-
-      editorRef.current!.innerHTML = "";
-      editorRef.current!.innerHTML = result.data;
-      setIsEditorEmpty(false);
-      setInputWordCount(countWords(editorRef.current!.innerText));
-    } else {
-      alert("Please select a PDF file.");
-    }
-  };
   const focusEditor = () => {
     if (editorRef.current) {
       editorRef.current.focus();
@@ -158,38 +118,10 @@ const Translator = () => {
               <InputLabel id="demo-simple-select-label">
                 Target Language
               </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={language}
-                label="Language"
-                onChange={handleChange}
-              >
-                <MenuItem value={"English"}>English</MenuItem>
-                <MenuItem value={"Spanish"}>Spanish</MenuItem>
-                <MenuItem value={"French"}>French</MenuItem>
-                <MenuItem value={"German"}>German</MenuItem>
-                <MenuItem value={"Chinese (Simplified and Traditional)"}>
-                  Chinese (Simplified and Traditional)
-                </MenuItem>
-                <MenuItem value={"Japanese"}>Japanese</MenuItem>
-                <MenuItem value={"Korean"}>Korean</MenuItem>
-                <MenuItem value={"Italian"}>Italian</MenuItem>
-                <MenuItem value={"Portuguese (European and Brazilian)"}>
-                  Portuguese (European and Brazilian)
-                </MenuItem>
-                <MenuItem value={"Arabic"}>Arabic</MenuItem>
-                <MenuItem value={"Hindi"}>Hindi</MenuItem>
-                <MenuItem value={"Turkish"}>Turkish</MenuItem>
-                <MenuItem value={"Swedish"}>Swedish</MenuItem>
-                <MenuItem value={"Norwegian"}>Norwegian</MenuItem>
-                <MenuItem value={"Danish"}>Danish</MenuItem>
-                <MenuItem value={"Finnish"}>Finnish</MenuItem>
-                <MenuItem value={"Polish"}>Polish</MenuItem>
-                <MenuItem value={"Greek"}>Greek</MenuItem>
-                <MenuItem value={"Romanian"}>Romanian</MenuItem>
-                <MenuItem value={"Czech"}>Czech</MenuItem>
-              </Select>
+              <TargetLangaugeOptions
+                language={language}
+                handleChange={handleChange}
+              />
             </FormControl>
           </div>
           <section className="input-output-section">
@@ -198,7 +130,9 @@ const Translator = () => {
                 contentEditable
                 className="editable"
                 ref={editorRef}
-                onPaste={handlePaste}
+                onPaste={(e: any) =>
+                  handlePaste(e, editorRef, setInputWordCount, setIsEditorEmpty)
+                }
                 onInput={(e: any) => handleEditorChange(e)}
               ></div>
               <div className="sub_div">
@@ -206,18 +140,30 @@ const Translator = () => {
                   <Button
                     sx={{ textTransform: "none" }}
                     variant="outlined"
-                    onClick={handlePasteClick}
+                    onClick={(e) =>
+                      handlePasteClick(
+                        editorRef,
+                        setIsEditorEmpty,
+                        setInputWordCount
+                      )
+                    }
                   >
                     Paste
                   </Button>
                 ) : null}
                 {isEditorEmpty ? (
                   <div>
-                    {" "}
                     <input
                       type="file"
                       accept=".pdf"
-                      onChange={handleFileChange}
+                      onChange={(e) =>
+                        handleFileChange(
+                          e,
+                          editorRef,
+                          setInputWordCount,
+                          setIsEditorEmpty
+                        )
+                      }
                       style={{ display: "none" }}
                       ref={fileInputRef}
                     />
@@ -252,15 +198,17 @@ const Translator = () => {
             <section className="output-container">
               <div className="output" ref={outputRef}></div>
 
-              <div className="sub_div">
-                {/*  <p>0 Sentences </p>
-
-                <p>0 Words</p> */}
-              </div>
+              <div className="sub_div"></div>
             </section>
           </section>
         </Card>
       </SideBar>
+      <AlertDialog
+        isDialogOpen={isDialogOpen}
+        setIsDialogOpen={setIsDialogOpen}
+        dialogTitle={dialogContent.title}
+        dialogContent={dialogContent.message}
+      />
     </>
   );
 };

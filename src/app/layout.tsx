@@ -1,7 +1,7 @@
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import "./globals.css";
 export const metadata = {
-  title: "Sability AI",
+  title: "Sabi AI",
   description: "Elevate Your Expression with Flawless Precision!",
 };
 
