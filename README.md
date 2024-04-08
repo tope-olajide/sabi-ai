@@ -1,60 +1,74 @@
+**Welcome to Sabi AI: Elevate Your Expression with Flawless Precision!**
 
-Sabi AI: Elevate Your Expression with Flawless Precision!
-Welcome to Sabi AI, your all-in-one solution for enhancing your writing experience. Harnessing the power of Open AI technology, Sabi is here to take your writing to the next level.
-What is Sabi AI? Sabi, derived from the Nigerian Pidgin word, it means to know or to understand. It is an innovative AI-powered grammar checker and content enhancement application built with OpenAI.
-FeaturesGrammar Checker- Detect and correct grammar errors.
-- Fix spelling mistakes.
-- Ensure proper punctuation.
-AI-Powered Paraphrasing Tool- Enhance your writing by transforming it into eight different modes.
-- Add diversity and flair to your content.
-Summarizer- Condense lengthy articles, papers, or documents into key points instantly.
+Welcome to Sabi AI, your comprehensive solution for refining your writing experience. Leveraging the cutting-edge MindsDB technology, Sabi AI is poised to revolutionize your writing endeavors.
+
+**What is Sabi AI?**
+
+Derived from the Nigerian Pidgin word, "Sabi" translates to "to know" or "to understand." Sabi AI is an innovative grammar checker and content enhancement application powered by MindsDB.
+
+**Features:**
+
+**Grammar Checker:**
+- Detect and rectify grammar errors swiftly.
+- Correct spelling mistakes seamlessly.
+- Ensure impeccable punctuation usage.
+
+**AI-Powered Paraphrasing Tool:**
+- Elevate your writing by transforming it into eight distinct modes.
+- Infuse diversity and flair into your content effortlessly.
+
+**Summarizer:**
+- Condense lengthy articles, papers, or documents into key points instantaneously.
 - Save time and effort in comprehending complex texts.
-Translator- Supports translation for up to 20 languages.
-- Read and write in different languages effortlessly.
-- Perfect for language learners, translate sentences, words, or entire paragraphs.
-Content Generator- Automatically generate various types of content, including articles.
+
+**Translator:**
+- Support for translation across 20 languages.
+- Seamlessly read and write in different languages.
+- Ideal for language learners; translate sentences, words, or entire paragraphs effortlessly.
+
+**Content Generator:**
+- Automatically generate various types of content, including articles.
 - Simply input and describe your desired topic to get started.
-Getting StartedFirst, run the development server:
 
+**Getting Started:**
+
+Ensure the server is up and running by following [these instructions to set up the server](https://github.com/tope-olajide/sability-ai-api).
+
+Then, clone this repository:
+```
+git clone https://github.com/tope-olajide/sabi-ai.git
+```
+
+Install the package:
+```
+npm install
+```
+or
+```
+yarn install
+```
+
+Run the development server:
+```
 npm run dev
-# or
+```
+or
+```
 yarn dev
+```
 
-Open http://localhost:3000 with your browser to see the result.
-Built With- NextJS
+Open http://localhost:3000 in your browser to view the result.
+
+**Built With:**
+- NextJS
 - OpenAI
-LicenseThis project is licensed under the MIT License.
-## Copilot
-Sabi AI: Elevate Your Expression with Flawless Precision!Welcome to Sability AI, your all-in-one solution for enhancing your writing experience. Harnessing the power of MindsDB technology, Sability is here to take your writing to the next level.
-What is Sabi AI?Sabi, derived from the Nigerian Pidgin word, means "to know" or "to understand." It is an innovative AI-powered grammar checker and content enhancement application built with MindsDB.
-FeaturesGrammar Checker- Detect and correct grammar errors.
-- Fix spelling mistakes.
-- Ensure proper punctuation.
-AI-Powered Paraphrasing Tool- Enhance your writing by transforming it into eight different modes.
-- Add diversity and flair to your content.
-Summarizer- Condense lengthy articles, papers, or documents into key points instantly.
-- Save time and effort in comprehending complex texts.
-Translator- Supports translation for up to 20 languages.
-- Read and write in different languages effortlessly.
-- Perfect for language learners; translate sentences, words, or entire paragraphs.
-Content Generator- Automatically generate various types of content, including articles.
-- Simply input and describe your desired topic to get started.
-Getting StartedFirst, run the development server:
 
-npm run dev
-# or
-yarn dev
+**License:**
 
-Open http://localhost:3000 with your browser to see the result.
-Built With- NextJS
-- OpenAI
-LicenseThis project is licensed under the MIT License.
+This project is licensed under the MIT License. See `LICENSE.txt` for more information.
 
+**Contact:**
 
-## Contact
 Temitope Olajide - [@kingdavvids](https://twitter.com/kingdavvids) - temitope_olajide@outlook.com
 
----
-
 For more information and updates, visit [Sability AI](https://sability-ai.vercel.app).
-

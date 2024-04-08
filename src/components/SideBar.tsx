@@ -367,7 +367,17 @@ export default function SideBar({ children, pageTitle }: any) {
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-slide-description">
-              <p>The word “<strong>Sabi</strong>”, originating from Nigerian Pidgin English, means <em>“to know”</em> or <em>“to understand”</em>. It is an open-source grammar-checking tool powered by the <b>OpenAI ChatGPT API</b>. This versatile tool offers a multitude of features:</p> <ul> <li><strong>Summarization</strong>: <em>Sabi</em> can condense text documents into various formats, making information more accessible.</li> <li><strong>Language Translation</strong>: Seamlessly bridge language barriers by inputting your text in your preferred language, and <em>Sabi</em> will provide accurate translations into approximately <strong>20 other languages</strong>.</li> <li><strong>Content Generation</strong>: <em>Sabi</em> automatically generates diverse content types, including engaging articles.</li> <li><strong>Paraphrasing</strong>: Spice up your content! <em>Sabi</em> excels at rephrasing sentences and paragraphs, making your writing more diverse and engaging.</li> </ul> <p>Using <strong>Sabi AI</strong> is straightforward:</p> <ul> <li><strong>Type</strong>: Simply input your text directly into the tool.</li> <li><strong>Copy and Paste</strong>: Bring existing content into <em>Sabi</em> for analysis.</li> <li><strong>Upload PDFs</strong>: Need to check a document? Upload your PDF files, and let <em>Sabi</em> work its magic.</li> <p>Empower your writing with <strong>Sabi</strong>—the intuitive grammar-checking companion! 🚀</p></ul>
+                <p>What is Sabi AI?Sabi, derived from the Nigerian Pidgin word, means "to know" or "to understand." It is an innovative AI-powered grammar checker and content enhancement application built with OpenAI.</p>
+                  <h4>Features</h4>
+                <ul>
+                  <li>Grammar Checker- Detect and correct grammar errors</li>
+                  <li>Ensure proper punctuation. AI-Powered Paraphrasing Tool- Enhance your writing by transforming it into eight different modes.</li>
+                  <li>Add diversity and flair to your content. Summarizer- Condense lengthy articles, papers, or documents into key points instantly.</li>
+                  <li>Save time and effort in comprehending complex texts. Translator- Supports translation for up to 20 languages.</li>
+                  <li>Read and write in different languages effortlessly.</li>
+                  <li>Perfect for language learners; translate sentences, words, or entire paragraphs. Content Generator- Automatically generate various types of content, including articles</li>
+                 </ul>
+                
               </DialogContentText>
             </DialogContent>
             <DialogActions>
